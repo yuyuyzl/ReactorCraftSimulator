@@ -1,14 +1,18 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en" ng-app="main">
 <head>
-<meta charset="utf-8">
-<title>yuyuyzl.guthub.io</title>
-<link href="css/main.css" rel="stylesheet" type="text/css" media="screen">
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
+    <script src="javascript/app.js"></script>
+    <title>Title</title>
 </head>
-
-<body>
-<div id="main">
-<h1>Hello World!</h1>
-</div>
+<body ng-controller="mainController as mc">
+<table border="1">
+    <tr ng-repeat="x in mc.fun(mc.col)">
+        <td ng-repeat="y in mc.fun(mc.row)">1</td>
+    </tr>
+</table>
+<input ng-model="mc.col">
+<input ng-model="mc.row">
 </body>
 </html>
