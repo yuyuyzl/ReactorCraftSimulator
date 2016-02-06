@@ -6,4 +6,9 @@ body table {
 tr td div {
 	background-color: #FFFFFF;
 	font-family: Consolas, "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", Monaco, "Courier New", monospace;
+
+}
+.selectedCell{
+	background-color: black;
+	color:white;
 }

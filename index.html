@@ -20,7 +20,7 @@
 </p>
 <table border="0">
     <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)"><div ng-click="mc.data[x][y]='Clicked'">
+        <td ng-repeat="y in mc.fun(mc.row)"><div ng-click="mc.data[x][y]=true">
             {{x}},{{y}}
 
         </div></td>
@@ -29,12 +29,12 @@
 <p/>
 <table border="0">
     <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)"><div>
+        <td ng-repeat="y in mc.fun(mc.row)"><div ng-class="{'selectedCell':mc.data[x][y]}">
 
-            <input ng-model="mc.data[x][y]">
+            &nbsp;&nbsp;
         </div></td>
     </tr>
 </table>
-
+<button ng-click="mc.data=null">clear</button>
 </body>
 </html>
