@@ -7,7 +7,7 @@
     app.controller("mainController",function(){
         this.col=2;
         this.row=3;
-
+        this.chosen=1
         this.fun=function(n){
             var ans=[];
             for (var i=0;i<n;i++){

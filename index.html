@@ -9,6 +9,13 @@
 </head>
 <body ng-controller="mainController as mc">
 <p>
+    <div ng-click="mc.chosen=1">-1-</div>
+<div ng-click="mc.chosen=2">-2-</div>
+<div ng-click="mc.chosen=3">-3-</div>
+
+
+</p>
+<p>
     <input ng-model="mc.col">
     <button ng-click="mc.col = mc.col+1">+</button>
     <button ng-click="mc.col = mc.col-1">-</button>
@@ -20,7 +27,7 @@
 </p>
 <table border="0">
     <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)"><div ng-click="mc.data[x][y]=true">
+        <td ng-repeat="y in mc.fun(mc.row)"><div ng-click="mc.data[x][y]=mc.chosen">
             {{x}},{{y}}
 
         </div></td>
@@ -29,9 +36,9 @@
 <p/>
 <table border="0">
     <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)"><div ng-class="{'selectedCell':mc.data[x][y]}">
+        <td ng-repeat="y in mc.fun(mc.row)"><div ng-class="{'selectedCell':mc.data[x][y]!=null}" ng-bind="mc.data[x][y]==null?'0':mc.data[x][y]">
 
-            &nbsp;&nbsp;
+
         </div></td>
     </tr>
 </table>
