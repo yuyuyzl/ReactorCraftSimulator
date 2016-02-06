@@ -5,11 +5,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.2/angular.min.js"></script>
     <script src="javascript/app.js"></script>
     <title>Title</title>
+<link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body ng-controller="mainController as mc">
-<table border="1">
+<table border="0">
     <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)">1</td>
+        <td ng-repeat="y in mc.fun(mc.row)"><div>&nbsp;{{x}},{{y}}&nbsp;</div></td>
     </tr>
 </table>
 <input ng-model="mc.col">

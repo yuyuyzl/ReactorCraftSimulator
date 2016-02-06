@@ -5,7 +5,7 @@
     var app=angular.module("main",[]);
     app.controller("mainController",function(){
         this.col=2;
-        this.row=2;
+        this.row=3;
         this.fun=function(n){
             var ans=[];
             for (var i=0;i<n;i++){

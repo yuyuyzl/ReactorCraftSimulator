@@ -1,0 +1,9 @@
+@charset "utf-8";
+body table {
+	background-color: #7293BF;
+	color: #000000;
+}
+tr td div {
+	background-color: #FFFFFF;
+	font-family: Consolas, "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", Monaco, "Courier New", monospace;
+}
