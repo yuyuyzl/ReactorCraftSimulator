@@ -9,3 +9,7 @@
 	width: auto;
 }
 
+.navadd{
+	-webkit-box-shadow: rgba(0, 0, 0, 0.45098) 0px 2px 3px 0px;
+	box-shadow: rgba(0, 0, 0, 0.45098) 0px 2px 3px 0px;
+}

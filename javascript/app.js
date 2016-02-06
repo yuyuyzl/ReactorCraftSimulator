@@ -5,8 +5,8 @@
     var app=angular.module("main",[]);
 
     app.controller("mainController",function(){
-        this.col=16;
-        this.row=16;
+        this.col=8;
+        this.row=8;
         this.chosen=1
         this.fun=function(n){
             var ans=[];
@@ -15,8 +15,11 @@
             }
             return ans;
         }
-        this.blockNames=[null,"Fuel Rod","Steam Boiler","Reflector"]
-        this.blockimg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png"]
+        this.getwidth=function(){
+            return document.body.clientHeight
+        }
+        this.blockNames=[null,"Fuel Rod","Steam Boiler","Reflector","Steel Block"]
+        this.blockimg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png","img/steel.png"]
 
     });
 

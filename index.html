@@ -26,46 +26,68 @@
     <title>Title</title>
 
 </head>
-<body ng-controller="mainController as mc" role="document" style="cursor:default">
+<body ng-controller="mainController as mc" role="document" style="cursor:default;padding-top: 100px">
+
+<nav class="nav navbar-inverse navbar-fixed-top navadd">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand">ReactorCraft Fission Reactor Simulator</a>
+        </div>
+    </div>
+</nav>
+
+
+
+
 <div class="container" role="main">
-<p>
-<ul class="nav nav-pills" role="tablist">
-    <li role="presentation" ng-click="mc.chosen=null" ng-class="{'active':mc.chosen==null}"><a>Null</a></li>
-    <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>Fuel Rod</a></li>
-    <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>Steam Boiler</a></li>
-    <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>Neutron Reflector</a></li>
+    <main class="col-md-8" id="tableContainer">
+        <div align="center">
+            <table border="1">
+                <tr ng-repeat="x in mc.fun(mc.col)">
+                    <td ng-repeat="y in mc.fun(mc.row)">
+                        <div>
+                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockimg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
-</ul>
+
+        </div>
+    </main>
+
+    <aside class="col-md-4">
+        <p align="center">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" ng-click="mc.chosen=null" ng-class="{'active':mc.chosen==null}"><a>Null</a></li>
+            <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>Fuel Rod</a></li>
+            <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>Steam Boiler</a></li>
+            <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>Neutron Reflector</a></li>
+            <li role="presentation" ng-click="mc.chosen=4" ng-class="{'active':mc.chosen==4}"><a>Steel Block</a></li>
+        </ul>
 
 
 
-</p>
-<p style="text-align: center">
-    Columns :
-    <input ng-model="mc.col">
-    <button ng-click="mc.col = mc.col+1">+</button>
-    <button ng-click="mc.col = mc.col-1">-</button>
-</p>
-<p style="text-align: center">
-    Rows :
-    <input ng-model="mc.row">
-    <button ng-click="mc.row = mc.row+1">+</button>
-    <button ng-click="mc.row = mc.row-1">-</button>
-</p>
+        </p>
+        <p style="text-align: center">
+            Columns :
+            <input ng-model="mc.col">
+            <button ng-click="mc.col = mc.col+1">+</button>
+            <button ng-click="mc.col = mc.col-1">-</button>
+        </p>
+        <p style="text-align: center">
+            Rows :
+            <input ng-model="mc.row">
+            <button ng-click="mc.row = mc.row+1">+</button>
+            <button ng-click="mc.row = mc.row-1">-</button>
+        </p>
 
-<p/>
+        <p>
+            <button ng-click="mc.data=null" style="width: 50px; height: 30px">clear</button>
+        </p>
+    </aside>
 
-    <table border="1">
-        <tr ng-repeat="x in mc.fun(mc.col)">
-            <td ng-repeat="y in mc.fun(mc.row)">
-                <div>
-                    <img ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockimg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
-                </div>
-        </td>
-    </tr>
-    </table>
 
-<button ng-click="mc.data=null">clear</button>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
