@@ -1,47 +1,75 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="main">
 <head>
-    <meta charset="UTF-8">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+
     <script src="javascript/angular.min.js"></script>
     <script src="javascript/app.js"></script>
     <title>Title</title>
-<link href="css/style.css" rel="stylesheet" type="text/css">
+
 </head>
-<body ng-controller="mainController as mc">
+<body ng-controller="mainController as mc" role="document" style="cursor:default">
+<div class="container" role="main">
 <p>
-    <div ng-click="mc.chosen=1">-1-</div>
-<div ng-click="mc.chosen=2">-2-</div>
-<div ng-click="mc.chosen=3">-3-</div>
+<ul class="nav nav-pills" role="tablist">
+
+    <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>-1-</a></li>
+    <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>-2-</a></li>
+    <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>-3-</a></li>
+
+</ul>
+
 
 
 </p>
 <p>
+    Columns :
     <input ng-model="mc.col">
     <button ng-click="mc.col = mc.col+1">+</button>
     <button ng-click="mc.col = mc.col-1">-</button>
 </p>
 <p>
+    Rows :
     <input ng-model="mc.row">
     <button ng-click="mc.row = mc.row+1">+</button>
     <button ng-click="mc.row = mc.row-1">-</button>
 </p>
-<table border="0">
-    <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)"><div ng-click="mc.data[x][y]=mc.chosen">
-            {{x}},{{y}}
 
-        </div></td>
-    </tr>
-</table>
 <p/>
-<table border="0">
+<table border="1">
     <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)"><div ng-class="{'selectedCell':mc.data[x][y]!=null}" ng-bind="mc.data[x][y]==null?'0':mc.data[x][y]">
-
-
-        </div></td>
+        <td ng-repeat="y in mc.fun(mc.row)">
+            <div
+                    ng-class="{'selectedCell':mc.data[x][y]!=null}"
+                    ng-bind="mc.data[x][y]==null?'&nbsp;&nbsp;&nbsp;&nbsp;':mc.data[x][y]"
+                    ng-click="mc.data[x][y]='&nbsp;'+mc.chosen+'&nbsp;'">
+            </div>
+        </td>
     </tr>
 </table>
 <button ng-click="mc.data=null">clear</button>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="javascript/bootstrap.min.js"></script>
+</div>
 </body>
 </html>

@@ -5,8 +5,8 @@
     var app=angular.module("main",[]);
 
     app.controller("mainController",function(){
-        this.col=2;
-        this.row=3;
+        this.col=16;
+        this.row=16;
         this.chosen=1
         this.fun=function(n){
             var ans=[];
