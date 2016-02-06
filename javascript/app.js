@@ -15,7 +15,8 @@
             }
             return ans;
         }
-        this.blockNames=[null,"Fuel Rod","Steam Boiler","Concrete"]
+        this.blockNames=[null,"Fuel Rod","Steam Boiler","Reflector"]
+        this.blockimg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png"]
 
     });
 

@@ -30,10 +30,10 @@
 <div class="container" role="main">
 <p>
 <ul class="nav nav-pills" role="tablist">
-
+    <li role="presentation" ng-click="mc.chosen=null" ng-class="{'active':mc.chosen==null}"><a>Null</a></li>
     <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>Fuel Rod</a></li>
-    <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>-2-</a></li>
-    <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>-3-</a></li>
+    <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>Steam Boiler</a></li>
+    <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>Neutron Reflector</a></li>
 
 </ul>
 
@@ -58,10 +58,8 @@
     <table border="1">
         <tr ng-repeat="x in mc.fun(mc.col)">
             <td ng-repeat="y in mc.fun(mc.row)">
-                <div
-                    ng-class="{'selectedCell':mc.data[x][y]!=null}"
-                    ng-bind="mc.data[x][y]==null?'&nbsp;&nbsp;&nbsp;&nbsp;':mc.data[x][y]"
-                    ng-click="mc.data[x][y]=mc.blockNames[mc.chosen]">
+                <div>
+                    <img ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockimg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
                 </div>
         </td>
     </tr>
