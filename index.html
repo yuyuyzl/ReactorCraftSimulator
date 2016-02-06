@@ -31,7 +31,7 @@
 <p>
 <ul class="nav nav-pills" role="tablist">
 
-    <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>-1-</a></li>
+    <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>Fuel Rod</a></li>
     <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>-2-</a></li>
     <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>-3-</a></li>
 
@@ -40,13 +40,13 @@
 
 
 </p>
-<p>
+<p style="text-align: center">
     Columns :
     <input ng-model="mc.col">
     <button ng-click="mc.col = mc.col+1">+</button>
     <button ng-click="mc.col = mc.col-1">-</button>
 </p>
-<p>
+<p style="text-align: center">
     Rows :
     <input ng-model="mc.row">
     <button ng-click="mc.row = mc.row+1">+</button>
@@ -54,17 +54,19 @@
 </p>
 
 <p/>
-<table border="1">
-    <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)">
-            <div
+
+    <table border="1">
+        <tr ng-repeat="x in mc.fun(mc.col)">
+            <td ng-repeat="y in mc.fun(mc.row)">
+                <div
                     ng-class="{'selectedCell':mc.data[x][y]!=null}"
                     ng-bind="mc.data[x][y]==null?'&nbsp;&nbsp;&nbsp;&nbsp;':mc.data[x][y]"
-                    ng-click="mc.data[x][y]='&nbsp;'+mc.chosen+'&nbsp;'">
-            </div>
+                    ng-click="mc.data[x][y]=mc.blockNames[mc.chosen]">
+                </div>
         </td>
     </tr>
-</table>
+    </table>
+
 <button ng-click="mc.data=null">clear</button>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>

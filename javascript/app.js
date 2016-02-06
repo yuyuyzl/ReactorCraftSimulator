@@ -15,6 +15,8 @@
             }
             return ans;
         }
+        this.blockNames=[null,"Fuel Rod","Steam Boiler","Concrete"]
+
     });
 
 })();
