@@ -8,12 +8,33 @@
 <link href="css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body ng-controller="mainController as mc">
+<p>
+    <input ng-model="mc.col">
+    <button ng-click="mc.col = mc.col+1">+</button>
+    <button ng-click="mc.col = mc.col-1">-</button>
+</p>
+<p>
+    <input ng-model="mc.row">
+    <button ng-click="mc.row = mc.row+1">+</button>
+    <button ng-click="mc.row = mc.row-1">-</button>
+</p>
 <table border="0">
     <tr ng-repeat="x in mc.fun(mc.col)">
-        <td ng-repeat="y in mc.fun(mc.row)"><div>&nbsp;{{x}},{{y}}&nbsp;</div></td>
+        <td ng-repeat="y in mc.fun(mc.row)"><div ng-click="mc.data[x][y]='Clicked'">
+            {{x}},{{y}}
+
+        </div></td>
     </tr>
 </table>
-<input ng-model="mc.col">
-<input ng-model="mc.row">
+<p/>
+<table border="0">
+    <tr ng-repeat="x in mc.fun(mc.col)">
+        <td ng-repeat="y in mc.fun(mc.row)"><div>
+
+            <input ng-model="mc.data[x][y]">
+        </div></td>
+    </tr>
+</table>
+
 </body>
 </html>
