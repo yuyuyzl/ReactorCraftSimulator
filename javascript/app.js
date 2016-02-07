@@ -1,6 +1,7 @@
 /**
  * Created by user on 2016/2/4.
  */
+
 (function(){
     var app=angular.module("main",[]);
 
