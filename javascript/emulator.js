@@ -1,6 +1,9 @@
 /**
  * Created by user on 2016/2/7.
  */
+
+
+//BaseTile.java
 var Basetile={
     createNew:function(){
         var tile={}
@@ -8,10 +11,41 @@ var Basetile={
         tile.setTemperature=function(newTemperature) {
             this.temperature = newTemperature;
         }
+        tile.updateTempurature=function(recWorld,x,z){
+            var dT=0-this.temperature;
+            if(dT!=0){
+                var d=64;
+                var diff=(1+dT/d);
+                if (diff<=1)diff=dT/Math.abs(dT);
+                this.temperature+=diff;
+            }
+            for (var i=0;i<=6;i++){
+                var dir = dirs[i];
+                var dx = x + dir.offsetX;
+                var dy = dir.offsetY;
+                var dz = z + dir.offsetZ;
+                var block = recWorld.getBlock(dx, dy, dz);
+                var te = recWorld.getTileEntity(dx, dy, dz);
+                if (block != null && te.hasOwnProperty("temperature")) {
+
+                    var bt = te;
+
+                    var T = bt.temperature;
+                    dT = T - this.temperature;
+                    if (dT > 0) {
+                        var newT = T - dT / 4;
+                        this.temperature += dT / 4;
+                        bt.setTemperature(newT);
+                    }
+
+                }
+            }
+        }
+
         return tile;
     }
 }
-
+//RecWorld.java
 var RecWorld={
     createNew:function(){
         var recworld={}
@@ -65,10 +99,24 @@ var RecWorld={
             return this.tiles[x][z];
 
         }
+        recworld.setBlock=function(t,x,z){
+            if (this.checkCoord(x,z)){
+                var b= Block.createNew();
+                b.type=t;
+                recworld.world[x][z]=b;
+                switch (t){
+                    case Block.Type.CORE:
+                    case Block.Type.BOILER:
+                    case Block.Type.REFLECTOR:
+                        break;//todo FILL THIS
+                }
+            }
+        }
+
         return recworld;
     }
 }
-
+//Block.java
 var Block={
     Type:{
         AIR:0, NORMAL:1, WATER:2, STEEL:3, CONCRETE:4, BEDINGOT:5, LEAD:6, OBSIDIAN:7, CORE:8, BOILER:9, REFLECTOR:10
@@ -120,3 +168,37 @@ var Block={
         return block;
     }
 }
+//ForgeDirection.java
+function createNewDir(x, y, z){
+    var dir={}
+    dir.offsetX = x;
+    dir.offsetY = y;
+    dir.offsetZ = z;
+    dir.getOpposite=function(){
+        switch (this){
+            case ForgeDirection.UP:return ForgeDirection.DOWN;
+            case ForgeDirection.DOWN:return ForgeDirection.UP;
+            case ForgeDirection.NORTH:return ForgeDirection.SOUTH;
+            case ForgeDirection.SOUTH:return ForgeDirection.NORTH;
+            case ForgeDirection.WEST:return ForgeDirection.EAST;
+            case ForgeDirection.EAST:return ForgeDirection.WEST;
+        }
+    }
+    return dir;
+}
+var ForgeDirection={
+    DOWN:createNewDir(0,-1,0),
+    UP:createNewDir(0,1,0),
+    NORTH:createNewDir(0,0,-1),
+    SOUTH:createNewDir(0,0,1),
+    WEST:createNewDir(-1,0,0),
+    EAST:createNewDir(1,0,0)
+}
+var ForgeDirections=[ForgeDirection.DOWN,ForgeDirection.UP,
+    ForgeDirection.NORTH,ForgeDirection.SOUTH,
+    ForgeDirection.WEST,ForgeDirection.EAST];
+
+
+
+
+
