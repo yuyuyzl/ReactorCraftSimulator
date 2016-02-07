@@ -9,7 +9,7 @@
         this.col=8;
         this.row=8;
         this.chosen=1
-        this.fun=function(n){
+        this.getRangeArray=function(n){
             var ans=[];
             for (var i=0;i<n;i++){
                 ans.push(i);

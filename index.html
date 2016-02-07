@@ -48,8 +48,8 @@
     <main class="col-md-8" id="tableContainer">
         <div align="center">
             <table border="1">
-                <tr ng-repeat="x in mc.fun(mc.col)">
-                    <td ng-repeat="y in mc.fun(mc.row)">
+                <tr ng-repeat="x in mc.getRangeArray(mc.col)">
+                    <td ng-repeat="y in mc.getRangeArray(mc.row)">
                         <div>
                             <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockimg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
                         </div>

@@ -198,7 +198,68 @@ var ForgeDirections=[ForgeDirection.DOWN,ForgeDirection.UP,
     ForgeDirection.NORTH,ForgeDirection.SOUTH,
     ForgeDirection.WEST,ForgeDirection.EAST];
 
+//ReikaRandomHelper.java
+var ReikaRandomHelper={
+    doWithChance:function(num){
+        if (num >= 100.0) {
+            return true;
+        } else {
+            if (num > 1.0) {
+                num /= 100.0;
+            }
 
+            return num >= 1.0 || (num > 0.0 && (num < 1.0E-14 ? Math.random() * 1.0E13 < num * 1.0E13 : Math.random() < num));
+        }
+    }
+}
 
+//TileBoiler.java
+var TileBoiler={
+    createNew:function(x,z){
+        var tb=Basetile.createNew();
+        tb.entity_x=x;
+        tb.entity_z=z;
+        tb.getX=function (){
+            return this.entity_x;
+        }
+        tb.getZ=function(){
+            return this.entity_z;
+        }
+        tb.update= function (recWorld,x,z) {
+            if (recWorld.worldTick%20==0){
+                this.updateTempurature(recWorld,x,z);
+                if (this.temperature>=2000){
+                    //TODO HANDLE OVERHEAT
+                }
+            }
+            if (this.temperature>100) {
+                recWorld.steam++;
+                this.temperature -= 10;//this is modified by wz
+            }
 
+        }
 
+        return tb;
+    }
+}
+
+//TileFuelCore.java
+
+var TileFuelCore={
+    createNew:function(x,z){
+        var tb=Basetile.createNew();
+        tb.entity_x=x;
+        tb.entity_z=z;
+        tb.getX=function (){
+            return this.entity_x;
+        }
+        tb.getZ=function(){
+            return this.entity_z;
+        }
+        tb.onNeutron=function(recWorld,x,y,z){
+
+        }
+
+        return tb;
+    }
+}
