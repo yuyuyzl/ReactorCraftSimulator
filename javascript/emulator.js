@@ -26,7 +26,7 @@ var Basetile={
                 var dz = z + dir.offsetZ;
                 var block = recWorld.getBlock(dx, dy, dz);
                 var te = recWorld.getTileEntity(dx, dy, dz);
-                if (block != null && te.hasOwnProperty("temperature")) {
+                if (block != null && te!=null && te.hasOwnProperty("temperature")) {
 
                     var bt = te;
 
@@ -75,12 +75,12 @@ var RecWorld={
         recworld.printWorld=function(){
             var s=""
             this.tileArray.forEach(function(te){
-                console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
+                //console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
                 s+=recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature+"<br>"
             });
-            console.log("The time is "+recworld.worldTick);
+            //console.log("The time is "+recworld.worldTick);
             s+="The time is "+recworld.worldTick+"<br>"
-            console.log("Total steam is "+recworld.steam);
+            //console.log("Total steam is "+recworld.steam);
             s+="Total steam is "+recworld.steam;
             return s;
         };
@@ -323,7 +323,8 @@ wd.setBlock(Block.Type.BOILER,1,3);
 for (var i=0;i<3000000;i++){
     wd.doTick();
     wd.worldTick++;
+    if (wd.worldTick%1000000==0)console.log(wd.printWorld());
 }
 
-wd.printWorld();
-//*/
+*/
+
