@@ -76,7 +76,7 @@ var RecWorld={
             var s=""
             this.tileArray.forEach(function(te){
                 //console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
-                s+=recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature+"<br>"
+                s+=recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+Math.round(te.temperature)+"<br>"
             });
             //console.log("The time is "+recworld.worldTick);
             s+="The time is "+recworld.worldTick+"<br>"
