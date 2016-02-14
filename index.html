@@ -8,21 +8,11 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
 
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
 
 
-    <script src="javascript/angular.min.js"></script>
-    <script src="javascript/app.js"></script>
+
+
     <title>ReactorCraft Simulator</title>
 
 </head>
@@ -77,12 +67,12 @@
         </p>
         <p style="text-align: center">
             Scale:
-            <input ng-model="mc.col" style="width: 30px">
+            <input ng-model="mc.col" style="width: 30px;text-align: center;">
             <button ng-click="mc.col=mc.inc(mc.col)">+</button>
             <button ng-click="mc.col=mc.col-1">-</button>
             &nbsp;&nbsp;x&nbsp;&nbsp;
 
-            <input ng-model="mc.row"  style="width: 30px">
+            <input ng-model="mc.row"  style="width: 30px;text-align: center;">
             <button ng-click="mc.row=mc.inc(mc.row)">+</button>
             <button ng-click="mc.row=mc.row-1">-</button>
         </p>
@@ -93,6 +83,18 @@
     </aside>
 
 
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<script src="javascript/angular.min.js"></script>
+<script src="javascript/app.js"></script>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
