@@ -78,12 +78,12 @@
         <p style="text-align: center">
             Scale:
             <input ng-model="mc.col" style="width: 30px">
-            <button ng-click="mc.col=mc.col+1">+</button>
+            <button ng-click="mc.inc(mc.col)">+</button>
             <button ng-click="mc.col=mc.col-1">-</button>
             &nbsp;&nbsp;x&nbsp;&nbsp;
 
             <input ng-model="mc.row"  style="width: 30px">
-            <button ng-click="mc.row=mc.row+1">+</button>
+            <button ng-click="mc.inc(mc.row)">+</button>
             <button ng-click="mc.row=mc.row-1">-</button>
         </p>
 
