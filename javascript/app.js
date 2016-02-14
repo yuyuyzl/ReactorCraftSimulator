@@ -18,6 +18,10 @@
         this.getwidth=function(){
             return document.body.clientHeight
         }
+        this.inc=function(n){
+            if (typeof(n)=="number")n++;
+            else n=Number(n)+1;
+        }
         this.blockNames=[null,"Fuel Rod","Steam Boiler","Reflector","Steel Block"]
         this.blockimg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png","img/steel.png"]
 
