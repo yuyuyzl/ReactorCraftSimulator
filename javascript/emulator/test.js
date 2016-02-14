@@ -7,6 +7,6 @@
 var a={
     c:1,
     b:2
-}
+};
 
 console.log(Math.random());

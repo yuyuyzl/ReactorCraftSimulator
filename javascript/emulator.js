@@ -73,14 +73,17 @@ var RecWorld={
             //console.log("finished!!!!!!!!!!!!!!!!")
         };
         recworld.printWorld=function(){
+            var s=""
             this.tileArray.forEach(function(te){
                 console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
-
-
-            })
+                s+=recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature+"<br>"
+            });
             console.log("The time is "+recworld.worldTick);
+            s+="The time is "+recworld.worldTick+"<br>"
             console.log("Total steam is "+recworld.steam);
-        }
+            s+="Total steam is "+recworld.steam;
+            return s;
+        };
         recworld.checkCoord=function(x, z) {
             if (x < 0 || z < 0) {
                 return false;
@@ -302,22 +305,25 @@ var TileFuelCore={
                     console.log("Overheat!")
                 }
             }
-        }
+        };
         return tb;
     }
 };
 
-var wd=RecWorld.createNew(5);
+
+
+/*
+wd=RecWorld.createNew(5);
 wd.setBlock(Block.Type.CORE,1,2);
 wd.setBlock(Block.Type.BOILER,2,2);
 wd.setBlock(Block.Type.BOILER,0,2);
 wd.setBlock(Block.Type.BOILER,1,1);
 wd.setBlock(Block.Type.BOILER,1,3);
 
-for (var i=0;i<300000;i++){
+for (var i=0;i<3000000;i++){
     wd.doTick();
     wd.worldTick++;
 }
 
 wd.printWorld();
-
+//*/

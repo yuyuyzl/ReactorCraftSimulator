@@ -6,13 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-
-
-
-
-
-
-
     <title>ReactorCraft Simulator</title>
 
 </head>
@@ -41,7 +34,7 @@
                 <tr ng-repeat="x in mc.getRangeArray(mc.col)">
                     <td ng-repeat="y in mc.getRangeArray(mc.row)">
                         <div>
-                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockimg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
+                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockImg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
                         </div>
                     </td>
                 </tr>
@@ -55,11 +48,13 @@
         <h4>Block List:</h4>
 
         <ul class="nav nav-pills" role="tablist">
-            <li role="presentation" ng-click="mc.chosen=null" ng-class="{'active':mc.chosen==null}"><a>Null</a></li>
+<!--            <li role="presentation" ng-click="mc.chosen=null" ng-class="{'active':mc.chosen==null}"><a>Null</a></li>
             <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>Fuel Rod</a></li>
             <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>Steam Boiler</a></li>
             <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>Neutron Reflector</a></li>
             <li role="presentation" ng-click="mc.chosen=4" ng-class="{'active':mc.chosen==4}"><a>Steel Block</a></li>
+            -->
+            <li role="presentation" ng-repeat="i in mc.getRangeArray(mc.blockNames.length)" ng-click="mc.chosen=i" ng-class="{'active':mc.chosen==i}"><a ng-bind="mc.blockNames[i]"></a></li>
         </ul>
 
 
@@ -76,10 +71,17 @@
             <button ng-click="mc.row=mc.inc(mc.row)">+</button>
             <button ng-click="mc.row=mc.row-1">-</button>
         </p>
-
+        <br>
         <p align="center">
-            <button ng-click="mc.data=null" style="width: 100px; height: 30px">clear</button>
+            <button ng-click="mc.clearData()" style="width: 100px; height: 30px">clear</button>
         </p>
+        <br>
+        <p align="center">
+            <button ng-click="mc.emulate()" style="width: 100px; height: 30px">Let's Rock!</button>
+        </p>
+        <div>
+            <p ng-bind-html="mc.outputFieldSafe"></p>
+        </div>
     </aside>
 
 
@@ -93,12 +95,13 @@
     <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-<script src="javascript/angular.min.js"></script>
-<script src="javascript/app.js"></script>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="javascript/bootstrap.min.js"></script>
+    <script src="javascript/angular.min.js"></script>
+    <script src="javascript/app.js"></script>
+    <script src="javascript/emulator.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="javascript/bootstrap.min.js"></script>
 </div>
 </body>
 </html>
