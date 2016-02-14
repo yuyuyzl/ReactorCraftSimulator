@@ -6,11 +6,11 @@
 //BaseTile.java
 var Basetile={
     createNew:function(){
-        var tile={}
+        var tile={};
         tile.temperature=0;
         tile.setTemperature=function(newTemperature) {
             this.temperature = newTemperature;
-        }
+        };
         tile.updateTempurature=function(recWorld,x,z){
             var dT=0-this.temperature;
             if(dT!=0){
@@ -19,8 +19,8 @@ var Basetile={
                 if (diff<=1)diff=dT/Math.abs(dT);
                 this.temperature+=diff;
             }
-            for (var i=0;i<=6;i++){
-                var dir = dirs[i];
+            for (var i=0;i<6;i++){
+                var dir = ForgeDirections[i];
                 var dx = x + dir.offsetX;
                 var dy = dir.offsetY;
                 var dz = z + dir.offsetZ;
@@ -40,25 +40,46 @@ var Basetile={
 
                 }
             }
-        }
+        };
 
         return tile;
     }
-}
+};
 //RecWorld.java
 var RecWorld={
-    createNew:function(){
-        var recworld={}
+    createNew:function(mr){
+        var recworld={};
         recworld.worldTick=0;
         recworld.steam=0;
         recworld.isRemote=false;
         recworld.coreCount=0;
-        recworld.tiles=null;
-        recworld.world=null;
+        recworld.tiles=[];
+        for(var i=0;i<mr;i++){
+            recworld.tiles.push(new Array(mr));
+        }
+        recworld.world=[];
+        for(var i=0;i<mr;i++){
+            recworld.world.push(new Array(mr));
+        }
+        recworld.tileArray=[];
         recworld.doTick=function(){
-            for(var te in this.tileArray){
-                te.update(this, te.getX(), te.getZ());
-            }
+
+            this.tileArray.forEach(function(te){
+
+
+                    te.update(recworld, te.getX(), te.getZ());
+
+            });
+            //console.log("finished!!!!!!!!!!!!!!!!")
+        };
+        recworld.printWorld=function(){
+            this.tileArray.forEach(function(te){
+                console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
+
+
+            })
+            console.log("The time is "+recworld.worldTick);
+            console.log("Total steam is "+recworld.steam);
         }
         recworld.checkCoord=function(x, z) {
             if (x < 0 || z < 0) {
@@ -71,12 +92,12 @@ var RecWorld={
                 return false;
             }
             return true;
-        }
+        };
         recworld.getBlock=function(x,y,z){
             if (y != 0) {
                 return null;//block.air -> null
             }
-            if (!checkCoord(x, z)) {
+            if (!this.checkCoord(x, z)) {
                 return null;//block.air -> null
             }
             var b = this.world[x][z];
@@ -87,18 +108,18 @@ var RecWorld={
             {
                 return b;
             }
-        }
-        recworld.getBlockMetadata=function(x,y,z){return 0}
+        };
+        recworld.getBlockMetadata=function(x,y,z){return 0};
         recworld.getTileEntity=function(x,y,z) {
             if (y != 0) {
                 return null;
             }
-            if (!checkCoord(x, z)) {
+            if (!this.checkCoord(x, z)) {
                 return null;
             }
             return this.tiles[x][z];
 
-        }
+        };
         recworld.setBlock=function(t,x,z){
             if (this.checkCoord(x,z)){
                 var b= Block.createNew();
@@ -106,16 +127,24 @@ var RecWorld={
                 recworld.world[x][z]=b;
                 switch (t){
                     case Block.Type.CORE:
+                        var te=TileFuelCore.createNew(x,z);
+                        recworld.tiles[x][z]=te;
+                        recworld.tileArray.push(te);
+                        break;
                     case Block.Type.BOILER:
+                        var te=TileBoiler.createNew(x,z);
+                        recworld.tiles[x][z]=te;
+                        recworld.tileArray.push(te);
+                        break;
                     case Block.Type.REFLECTOR:
                         break;//todo FILL THIS
                 }
             }
-        }
+        };
 
         return recworld;
     }
-}
+};
 //Block.java
 var Block={
     Type:{
@@ -132,7 +161,7 @@ var Block={
                 default:
                     return false;
             }
-        }
+        };
         block.isNeutronShield=function(){
             switch (this.type) {
                 case Block.Type.WATER:
@@ -145,7 +174,7 @@ var Block={
                 default:
                     return false;
             }
-        }
+        };
         block.getAbsorptionChance=function(t){
             switch(this.type)
             {
@@ -164,13 +193,13 @@ var Block={
                 default :
                     return 0;
             }
-        }
+        };
         return block;
     }
-}
+};
 //ForgeDirection.java
 function createNewDir(x, y, z){
-    var dir={}
+    var dir={};
     dir.offsetX = x;
     dir.offsetY = y;
     dir.offsetZ = z;
@@ -183,7 +212,7 @@ function createNewDir(x, y, z){
             case ForgeDirection.WEST:return ForgeDirection.EAST;
             case ForgeDirection.EAST:return ForgeDirection.WEST;
         }
-    }
+    };
     return dir;
 }
 var ForgeDirection={
@@ -193,7 +222,7 @@ var ForgeDirection={
     SOUTH:createNewDir(0,0,1),
     WEST:createNewDir(-1,0,0),
     EAST:createNewDir(1,0,0)
-}
+};
 var ForgeDirections=[ForgeDirection.DOWN,ForgeDirection.UP,
     ForgeDirection.NORTH,ForgeDirection.SOUTH,
     ForgeDirection.WEST,ForgeDirection.EAST];
@@ -211,7 +240,7 @@ var ReikaRandomHelper={
             return num >= 1.0 || (num > 0.0 && (num < 1.0E-14 ? Math.random() * 1.0E13 < num * 1.0E13 : Math.random() < num));
         }
     }
-}
+};
 
 //TileBoiler.java
 var TileBoiler={
@@ -221,15 +250,16 @@ var TileBoiler={
         tb.entity_z=z;
         tb.getX=function (){
             return this.entity_x;
-        }
+        };
         tb.getZ=function(){
             return this.entity_z;
-        }
+        };
         tb.update= function (recWorld,x,z) {
             if (recWorld.worldTick%20==0){
                 this.updateTempurature(recWorld,x,z);
                 if (this.temperature>=2000){
                     //TODO HANDLE OVERHEAT
+                    console.log("Overheat!")
                 }
             }
             if (this.temperature>100) {
@@ -237,11 +267,11 @@ var TileBoiler={
                 this.temperature -= 10;//this is modified by wz
             }
 
-        }
+        };
 
         return tb;
     }
-}
+};
 
 //TileFuelCore.java
 
@@ -252,14 +282,42 @@ var TileFuelCore={
         tb.entity_z=z;
         tb.getX=function (){
             return this.entity_x;
-        }
+        };
         tb.getZ=function(){
             return this.entity_z;
-        }
+        };
         tb.onNeutron=function(recWorld,x,y,z){
 
-        }
+        };
+        tb.update=function(recWorld,x,z){
+            //TODO EMULATE NEUTRON
+            //console.log("CORE UPDATE CALLED")
+            //console.log(recWorld.worldTick);
+            if (recWorld.worldTick%20==0){
+                this.temperature=400;
+                this.updateTempurature(recWorld,x,z);
 
+                if (this.temperature>=2000){
+                    //TODO HANDLE OVERHEAT
+                    console.log("Overheat!")
+                }
+            }
+        }
         return tb;
     }
+};
+
+var wd=RecWorld.createNew(5);
+wd.setBlock(Block.Type.CORE,1,2);
+wd.setBlock(Block.Type.BOILER,2,2);
+wd.setBlock(Block.Type.BOILER,0,2);
+wd.setBlock(Block.Type.BOILER,1,1);
+wd.setBlock(Block.Type.BOILER,1,3);
+
+for (var i=0;i<300000;i++){
+    wd.doTick();
+    wd.worldTick++;
 }
+
+wd.printWorld();
+
