@@ -76,9 +76,12 @@
             <button ng-click="mc.clearData()" style="width: 100px; height: 30px">Clear</button>
         </p>
         <br>
-
+        <p align="center">
+            Time:&nbsp;<input ng-model="mc.maxtime" style="width: 100px;text-align: center;">&nbsp;&nbsp;&nbsp;&nbsp;Step:&nbsp;<input ng-model="mc.steptime" style="width: 100px;text-align: center;">
+        </p>
         <p align="center">
             <button ng-click="mc.emulate()" style="width: 100px; height: 30px">Let's Rock!</button>
+            <button ng-click="mc.stopNow=true" style="width: 100px; height: 30px">It's Over!</button>
         </p>
         <div>
             <p ng-bind-html="outputFieldSafe"></p>
