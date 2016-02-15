@@ -9,4 +9,4 @@ var a={
     b:2
 };
 
-console.log(Math.random());
+console.log(Date.now());

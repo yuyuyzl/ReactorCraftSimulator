@@ -10,7 +10,7 @@
         this.row=8;
         this.chosen=1;
         this.maxtime=30000000;
-        this.steptime=100000;
+        this.refreshRate=200;
         this.stopNow=false;
         this.clearData=function(){
             this.data=[];
@@ -43,7 +43,7 @@
         this.emulate=function(){
             this.stopNow=false;
             var a=this;
-            var wd=RecWorld.createNew(Math.max(a.col,a.row));
+            var wd=RecWorld.createNew(Math.max(a.col,a.row)+1);
             for (var i=0;i<a.data.length;i++){
                     //console.log(this.data[i].length)
                 for (var j=0;j<a.data[i].length;j++){
@@ -52,24 +52,26 @@
                 }
             }
             var emdefer=function(){
-                    var deferred=$q.defer();
-                    setTimeout(function(){
-                        for (var i=0;i< a.steptime;i++){
-                            wd.doTick();
-                            wd.worldTick++;
-
-                        }
-                        deferred.resolve();
-                    },0);
-                    return deferred.promise;
+                var deferred=$q.defer();
+                setTimeout(function(){
+                    var sd=Date.now();
+                    while(Date.now()-sd< a.refreshRate && wd.worldTick< a.maxtime && !a.stopNow){
+                        wd.doTick();
+                        wd.worldTick++;
+                    }
+                    if (a.stopNow)deferred.reject();else deferred.resolve();
+                },0);
+                return deferred.promise;
             };
-            function dofun(rmtime) {
+            function doemulate() {
                 emdefer().then(function () {
                     a.outputHtml(wd.printWorld());
-                    if (!a.stopNow && rmtime-a.steptime>0)dofun(rmtime- a.steptime);
+                    if (wd.worldTick< a.maxtime)doemulate();
+                },function(){
+                    a.outputHtml(wd.printWorld());
                 });
             }
-            dofun(a.maxtime);
+            doemulate();
         }
     }]);
 
