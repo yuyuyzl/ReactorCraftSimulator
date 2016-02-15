@@ -310,7 +310,28 @@ var TileFuelCore={
     }
 };
 
-//
+//NeutronEmulatorV2.java
+var NeutronEmulatorV2={
+    createNew:function(){
+        var ne={};
+        ne.MAX_DISTANCE=16;
+        var NeutronTracker={
+            createNew:function(direction,x,y,z){
+                var nt={}
+                nt.direcion=direction;
+                nt.x=x;
+                nt.y=y;
+                nt.z=z;
+                nt.age=0;
+                nt.steps=0
+                return nt;
+            }
+        }
+
+        return ne;
+    }
+}
+
 
 /*
 wd=RecWorld.createNew(5);
