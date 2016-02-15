@@ -43,20 +43,15 @@
         this.emulate=function(){
             this.stopNow=false;
             var a=this;
-
-
-
-                var wd=RecWorld.createNew(Math.max(a.col,a.row));
-                //console.log(this.data.length)
-                for (var i=0;i<a.data.length;i++){
+            var wd=RecWorld.createNew(Math.max(a.col,a.row));
+            for (var i=0;i<a.data.length;i++){
                     //console.log(this.data[i].length)
-                    for (var j=0;j<a.data[i].length;j++){
+                for (var j=0;j<a.data[i].length;j++){
                         //console.log(i+" "+j);
-                        if (a.data[i][j]!=null)wd.setBlock(a.blockValue[a.data[i][j]],i,j);
-                    }
+                    if (a.data[i][j]!=null)wd.setBlock(a.blockValue[a.data[i][j]],i,j);
                 }
-
-                var emdefer=function(){
+            }
+            var emdefer=function(){
                     var deferred=$q.defer();
                     setTimeout(function(){
                         for (var i=0;i< a.steptime;i++){
@@ -67,18 +62,14 @@
                         deferred.resolve();
                     },0);
                     return deferred.promise;
-                };
-
-
-
-                        function dofun(rmtime) {
-                            emdefer().then(function () {
-                                a.outputHtml(wd.printWorld());
-                                if (!a.stopNow && rmtime-a.steptime>0)dofun(rmtime- a.steptime);
-                            });
-                        }
-
-                dofun(a.maxtime);
+            };
+            function dofun(rmtime) {
+                emdefer().then(function () {
+                    a.outputHtml(wd.printWorld());
+                    if (!a.stopNow && rmtime-a.steptime>0)dofun(rmtime- a.steptime);
+                });
+            }
+            dofun(a.maxtime);
 
 
 
