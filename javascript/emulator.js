@@ -155,7 +155,7 @@ var Block={
     },
     createNew:function(){
         var block={};
-        block.hasTileEntity=function(meta){
+        block.hasTileEntity=function(){
             switch (this.type) {
                 case Block.Type.CORE:
                 case Block.Type.BOILER:
@@ -390,7 +390,14 @@ var NeutronEmulatorV2={
 
         }
         var testAbsorbed=function(neutron,recWorldObj){
-            //TODO Fill This
+            var block=recWorldObj.getBlock(neutron.x,neutron.y,neutron.z);
+            if (block==null || block.type==Block.Type.AIR){
+                return false;
+            }
+            if (block.hasTileEntity()){
+                var te=recWorldObj.getTileEntity(neutron.x,neutron.y,neutron.z);
+                //here
+            }
         }
         ne.onTick=function(recWorldObj){
             var _entry=NeutronTrackerList.head;
