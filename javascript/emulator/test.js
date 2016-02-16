@@ -3,10 +3,4 @@
  */
 
 
-
-var a={
-    c:1,
-    b:2
-};
-
-console.log(Date.now());
+console.log(Math.floor(3.9))

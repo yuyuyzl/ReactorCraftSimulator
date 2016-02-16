@@ -311,21 +311,83 @@ var TileFuelCore={
 };
 
 //NeutronEmulatorV2.java
+var getTicksByDistance=function(dist){
+    return  Math.floor((dist / 0.75) - 1);
+}
 var NeutronEmulatorV2={
     createNew:function(){
         var ne={};
         ne.MAX_DISTANCE=16;
         var NeutronTracker={
-            createNew:function(direction,x,y,z){
+            createNew:function(){
                 var nt={}
-                nt.direcion=direction;
-                nt.x=x;
-                nt.y=y;
-                nt.z=z;
-                nt.age=0;
-                nt.steps=0
+
+                nt.initNeutron=function(direction,x,y,z){
+                    nt.direcion=direction;
+                    nt.x=x;
+                    nt.y=y;
+                    nt.z=z;
+                    nt.age=0;
+                    nt.steps=0
+                }
+                nt.goForward=function(){
+                    this.steps++;
+                    this.x+=this.direction.offsetX;
+                    this.z+=this.direction.offsetZ;
+                }
+                nt.turnBack=function(){this.direcion=this.direcion.getOpposite()}
                 return nt;
             }
+        }
+        var NeutronTrackerList={
+            Entry:{
+                createNew:function(){
+                    var e=NeutronTracker.createNew();
+                    e.next=null;
+                    e.prev=null;
+                    return e;
+                }
+            },
+            freelist:null,head:null,
+            remove:function(entry){
+                // update "next"
+                if (entry.next != null) {
+                    entry.next.prev = entry.prev;
+                }
+                // update "prev"
+                if (entry.prev == null) {
+                    this.head = entry.next;
+                } else {
+                    entry.prev.next = entry.next;
+                    entry.prev = null;
+                }
+                // add to freelist
+                if (this.freeList != null) {
+                    this.freeList.prev = entry;
+                    entry.next = this.freeList;
+                    this.freeList = entry;
+                } else {
+                    this.freeList = entry;
+                    entry.next = null;
+                }
+            },
+            spawnNeutron:function(){
+                var entry=null;
+                if(this.freelist==null){
+                    entry=NeutronTrackerList.Entry.createNew();
+                }else{
+                    entry=this.freeList;
+                    if (this.freelist.next!=null)this.freelist.next.prev=null
+                    this.freeList=this.freeList.next;
+                }
+                entry.next=this.head;
+                if (this.head!=null){
+                    this.head.prev=entry;
+                }
+                this.head=entry;
+                return entry;
+            },
+
         }
 
         return ne;
