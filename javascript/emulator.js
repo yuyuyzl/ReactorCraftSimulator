@@ -386,10 +386,28 @@ var NeutronEmulatorV2={
                 }
                 this.head=entry;
                 return entry;
-            },
+            }
 
         }
+        var testAbsorbed=function(neutron,recWorldObj){
 
+        }
+        ne.onTick=function(recWorldObj){
+            var _entry=NeutronTrackerList.head;
+            while (_entry!=null){
+                var neutron=_entry;
+                _entry=_entry.next;
+                if (neutron.steps>= this.MAX_DISTANCE){
+                    NeutronTrackerList.remove(neutron);
+                    continue;
+                }
+
+                if (getTicksByDistance(neutron.steps) <= neutron.age++){
+                    var oldDirection = neutron.direction;
+                    //TODO Fill This After finishing testAbsorbed()
+                }
+            }
+        }
         return ne;
     }
 }
