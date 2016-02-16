@@ -390,7 +390,7 @@ var NeutronEmulatorV2={
 
         }
         var testAbsorbed=function(neutron,recWorldObj){
-
+            //TODO Fill This
         }
         ne.onTick=function(recWorldObj){
             var _entry=NeutronTrackerList.head;
@@ -404,7 +404,19 @@ var NeutronEmulatorV2={
 
                 if (getTicksByDistance(neutron.steps) <= neutron.age++){
                     var oldDirection = neutron.direction;
-                    //TODO Fill This After finishing testAbsorbed()
+                    if (testAbsorbed(neutron,recWorldObj)){
+                        NeutronTrackerList.remove(neutron);
+                    }else{
+                        neutron.goForward();
+                        if (oldDirection!=neutron.direction){
+                            neutron.age++;
+                            if (testAbsorbed(neutron,recWorldObj)){
+                                NeutronTrackerList.remove(neutron);
+                            }else{
+                                neutron.goForward();
+                            }
+                        }
+                    }
                 }
             }
         }
