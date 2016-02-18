@@ -389,29 +389,32 @@ var NeutronEmulatorV2={
                     entry.prev = null;
                 }
                 // add to freelist
-                if (this.freeList != null) {
-                    this.freeList.prev = entry;
-                    entry.next = this.freeList;
-                    this.freeList = entry;
+                if (this.freelist != null) {
+                    this.freelist.prev = entry;
+                    entry.next = this.freelist;
+                    this.freelist = entry;
                 } else {
-                    this.freeList = entry;
+                    this.freelist = entry;
                     entry.next = null;
                 }
             },
             spawnNeutron:function(){
                 var entry=null;
                 if(this.freelist==null){
+                    //console.log("new")
                     entry=NeutronTrackerList.Entry.createNew();
                 }else{
-                    entry=this.freeList;
+                    //console.log("restoring object")
+                    entry=this.freelist;
                     if (this.freelist.next!=null)this.freelist.next.prev=null
-                    this.freeList=this.freeList.next;
+                    this.freelist=this.freelist.next;
                 }
                 entry.next=this.head;
                 if (this.head!=null){
                     this.head.prev=entry;
                 }
                 this.head=entry;
+
                 return entry;
             }
 
@@ -500,5 +503,5 @@ for (var i=0;i<300000000;i++){
     //console.log(wd.printWorld());
 }
 
-*/
 
+*/
