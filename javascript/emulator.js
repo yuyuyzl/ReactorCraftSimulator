@@ -80,7 +80,8 @@ var RecWorld={
                 s+=recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+Math.round(te.temperature)+"<br>"
             });
             //console.log("The time is "+recworld.worldTick);
-            s+="The time is "+recworld.worldTick+"<br>"
+            s+="The tick is "+recworld.worldTick +"<br>"
+            s+="The day is "+recworld.worldTick/1728000 +"<br>"
             //console.log("Total steam is "+recworld.steam);
             s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick;
             return s;
@@ -266,7 +267,7 @@ var TileBoiler={
                 this.updateTempurature(recWorld,x,z);
                 if (this.temperature>=2000){
                     //TODO HANDLE OVERHEAT
-                    console.log("Overheat!")
+
                 }
             }
             if (this.temperature>100) {
@@ -295,13 +296,13 @@ var TileFuelCore={
             return this.entity_z;
         };
         tb.spawnNeutronButst=function(recWorld,x,z){
-            console.log("BURST!!!")
+
             this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
             this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
             this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
         }
         tb.onNeutron=function(recWorld,x,y,z){
-            console.log("onNeutron!")
+
             if (ReikaRandomHelper.doWithChance(1/9)){
                 return true;
             }
@@ -324,7 +325,8 @@ var TileFuelCore={
 
                 if (this.temperature>=2000){
                     //TODO HANDLE OVERHEAT
-                    console.log("Overheat!")
+                    console.log(x+" "+z+" Overheat!")
+                    throw(x+" "+z+" Overheat!"+recWorld.worldTick);
                 }
             }
         };
@@ -374,6 +376,7 @@ var NeutronEmulatorV2={
             },
             freelist:null,head:null,
             remove:function(entry){
+                //console.log(entry.steps)
                 // update "next"
                 if (entry.next != null) {
                     entry.next.prev = entry.prev;
@@ -431,14 +434,14 @@ var NeutronEmulatorV2={
             if (block.type==Block.Type.STEEL){
                 return true;
             }
-            console.log("X"+neutron.x+" Z"+neutron.z+" s"+neutron.steps+" t"+recWorldObj.worldTick)
-            console.log(block.type);
+            //console.log("X"+neutron.x+" Z"+neutron.z+" s"+neutron.steps+" t"+recWorldObj.worldTick)
+            //console.log(block.type);
             if (block.type==Block.Type.CORE){
 
                 var te=recWorldObj.getTileEntity(neutron.x,neutron.y,neutron.z);
 
 
-                te.onNeutron(recWorldObj,neutron.x,neutron.y,neutron.z);
+                return te.onNeutron(recWorldObj,neutron.x,neutron.y,neutron.z);
 
             }
             //ToDo handle normal block
@@ -457,10 +460,12 @@ var NeutronEmulatorV2={
                 if (getTicksByDistance(neutron.steps) <= neutron.age++){
                     var oldDirection = neutron.direction;
                     if (testAbsorbed(neutron,recWorldObj)){
+                        console.log("test true & called remove")
                         NeutronTrackerList.remove(neutron);
                     }else{
                         neutron.goForward();
                         if (oldDirection!=neutron.direction){
+                            //console.log("1")
                             neutron.age++;
                             if (testAbsorbed(neutron,recWorldObj)){
                                 NeutronTrackerList.remove(neutron);
@@ -487,14 +492,13 @@ var NeutronEmulatorV2={
 wd=RecWorld.createNew(8);
 wd.setBlock(Block.Type.CORE,1,2);
 wd.setBlock(Block.Type.CORE,1,3);
-wd.setBlock(Block.Type.CORE,2,3);
-wd.setBlock(Block.Type.CORE,2,3);
+wd.setBlock(Block.Type.CORE,1,4);
 
-for (var i=0;i<3000;i++){
+for (var i=0;i<300000000;i++){
     wd.doTick();
     wd.worldTick++;
-    console.log(wd.printWorld());
+    //console.log(wd.printWorld());
 }
-*/
 
+*/
 
