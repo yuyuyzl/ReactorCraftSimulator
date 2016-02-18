@@ -35,7 +35,7 @@
         this.blockValue=[null,Block.Type.CORE,Block.Type.BOILER,Block.Type.REFLECTOR,Block.Type.STEEL];
 
         this.outputHtml=function(s){
-            console.log(s);
+            //console.log(s);
             $scope.outputFieldSafe=$sce.trustAsHtml(s);
 
         };

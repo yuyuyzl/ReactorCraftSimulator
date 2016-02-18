@@ -460,7 +460,7 @@ var NeutronEmulatorV2={
                 if (getTicksByDistance(neutron.steps) <= neutron.age++){
                     var oldDirection = neutron.direction;
                     if (testAbsorbed(neutron,recWorldObj)){
-                        console.log("test true & called remove")
+                        //console.log("test true & called remove")
                         NeutronTrackerList.remove(neutron);
                     }else{
                         neutron.goForward();
