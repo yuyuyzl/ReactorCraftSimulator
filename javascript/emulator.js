@@ -33,6 +33,7 @@ var Basetile={
                     var T = bt.temperature;
                     dT = T - this.temperature;
                     if (dT > 0) {
+
                         var newT = T - dT / 4;
                         this.temperature += dT / 4;
                         bt.setTemperature(newT);
@@ -81,17 +82,17 @@ var RecWorld={
             //console.log("The time is "+recworld.worldTick);
             s+="The time is "+recworld.worldTick+"<br>"
             //console.log("Total steam is "+recworld.steam);
-            s+="Total steam is "+recworld.steam;
+            s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick;
             return s;
         };
         recworld.checkCoord=function(x, z) {
             if (x < 0 || z < 0) {
                 return false;
             }
-            if (x >= 32) {
+            if (x >= mr) {
                 return false;
             }
-            if (z >= 32) {
+            if (z >= mr) {
                 return false;
             }
             return true;
@@ -103,6 +104,7 @@ var RecWorld={
             if (!this.checkCoord(x, z)) {
                 return null;//block.air -> null
             }
+            //console.log("X"+x+"Z"+z)
             var b = this.world[x][z];
             if(b == null)
             {
@@ -139,7 +141,7 @@ var RecWorld={
                         recworld.tiles[x][z]=te;
                         recworld.tileArray.push(te);
                         break;
-                    case Block.Type.REFLECTOR:
+
                         break;//todo FILL THIS
                 }
             }
@@ -159,7 +161,6 @@ var Block={
             switch (this.type) {
                 case Block.Type.CORE:
                 case Block.Type.BOILER:
-                case Block.Type.REFLECTOR:
                     return true;
                 default:
                     return false;
@@ -229,7 +230,10 @@ var ForgeDirection={
 var ForgeDirections=[ForgeDirection.DOWN,ForgeDirection.UP,
     ForgeDirection.NORTH,ForgeDirection.SOUTH,
     ForgeDirection.WEST,ForgeDirection.EAST];
-
+var getRandomDirection=function(){
+    return [ForgeDirection.NORTH,ForgeDirection.SOUTH,
+        ForgeDirection.WEST,ForgeDirection.EAST,ForgeDirection.EAST][Math.floor(Math.random()*4)];
+}
 //ReikaRandomHelper.java
 var ReikaRandomHelper={
     doWithChance:function(num){
@@ -283,21 +287,39 @@ var TileFuelCore={
         var tb=Basetile.createNew();
         tb.entity_x=x;
         tb.entity_z=z;
+        tb.emulator=NeutronEmulatorV2.createNew();
         tb.getX=function (){
             return this.entity_x;
         };
         tb.getZ=function(){
             return this.entity_z;
         };
+        tb.spawnNeutronButst=function(recWorld,x,z){
+            console.log("BURST!!!")
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
+        }
         tb.onNeutron=function(recWorld,x,y,z){
-
+            console.log("onNeutron!")
+            if (ReikaRandomHelper.doWithChance(1/9)){
+                return true;
+            }
+            if (ReikaRandomHelper.doWithChance(30)){
+                this.spawnNeutronButst(recWorld,x,z);
+                this.temperature+=30;
+                return true;
+            }
+            return false;
         };
         tb.update=function(recWorld,x,z){
-            //TODO EMULATE NEUTRON
+            this.emulator.onTick(recWorld);
             //console.log("CORE UPDATE CALLED")
             //console.log(recWorld.worldTick);
+            if (ReikaRandomHelper.doWithChance(1/20))this.emulator.fireNeutron(recWorld,x,0,z,getRandomDirection());
             if (recWorld.worldTick%20==0){
-                this.temperature=400;
+                //this.temperature=400;
+
                 this.updateTempurature(recWorld,x,z);
 
                 if (this.temperature>=2000){
@@ -323,7 +345,7 @@ var NeutronEmulatorV2={
                 var nt={}
 
                 nt.initNeutron=function(direction,x,y,z){
-                    nt.direcion=direction;
+                    nt.direction=direction;
                     nt.x=x;
                     nt.y=y;
                     nt.z=z;
@@ -331,11 +353,13 @@ var NeutronEmulatorV2={
                     nt.steps=0
                 }
                 nt.goForward=function(){
+
                     this.steps++;
+
                     this.x+=this.direction.offsetX;
                     this.z+=this.direction.offsetZ;
                 }
-                nt.turnBack=function(){this.direcion=this.direcion.getOpposite()}
+                nt.turnBack=function(){this.direction=this.direction.getOpposite()}
                 return nt;
             }
         }
@@ -390,14 +414,35 @@ var NeutronEmulatorV2={
 
         }
         var testAbsorbed=function(neutron,recWorldObj){
-            var block=recWorldObj.getBlock(neutron.x,neutron.y,neutron.z);
+
+            var block=recWorldObj.getBlock(neutron.x,0,neutron.z);
             if (block==null || block.type==Block.Type.AIR){
                 return false;
             }
-            if (block.hasTileEntity()){
-                var te=recWorldObj.getTileEntity(neutron.x,neutron.y,neutron.z);
-                //here
+            if (block.type==Block.Type.REFLECTOR){
+                if (ReikaRandomHelper.doWithChance(0.25)){
+                    neutron.turnBack();
+                    return false;
+                }
+                if (ReikaRandomHelper.doWithChance(0.5)){
+                    return true;
+                }
             }
+            if (block.type==Block.Type.STEEL){
+                return true;
+            }
+            console.log("X"+neutron.x+" Z"+neutron.z+" s"+neutron.steps+" t"+recWorldObj.worldTick)
+            console.log(block.type);
+            if (block.type==Block.Type.CORE){
+
+                var te=recWorldObj.getTileEntity(neutron.x,neutron.y,neutron.z);
+
+
+                te.onNeutron(recWorldObj,neutron.x,neutron.y,neutron.z);
+
+            }
+            //ToDo handle normal block
+            return false;
         }
         ne.onTick=function(recWorldObj){
             var _entry=NeutronTrackerList.head;
@@ -427,24 +472,29 @@ var NeutronEmulatorV2={
                 }
             }
         }
+        ne.fireNeutron=function(recWorldObj,x,y,z,direction){
+            //console.log(x,z,direction);
+            var neutron=NeutronTrackerList.spawnNeutron();
+            neutron.initNeutron(direction,x,y,z);
+            neutron.goForward();
+        }
         return ne;
     }
 }
 
 
 /*
-wd=RecWorld.createNew(5);
+wd=RecWorld.createNew(8);
 wd.setBlock(Block.Type.CORE,1,2);
-wd.setBlock(Block.Type.BOILER,2,2);
-wd.setBlock(Block.Type.BOILER,0,2);
-wd.setBlock(Block.Type.BOILER,1,1);
-wd.setBlock(Block.Type.BOILER,1,3);
+wd.setBlock(Block.Type.CORE,1,3);
+wd.setBlock(Block.Type.CORE,2,3);
+wd.setBlock(Block.Type.CORE,2,3);
 
-for (var i=0;i<3000000;i++){
+for (var i=0;i<3000;i++){
     wd.doTick();
     wd.worldTick++;
-    if (wd.worldTick%1000000==0)console.log(wd.printWorld());
+    console.log(wd.printWorld());
 }
-
 */
+
 
