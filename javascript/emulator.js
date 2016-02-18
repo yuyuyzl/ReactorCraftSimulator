@@ -73,11 +73,12 @@ var RecWorld={
             });
             //console.log("finished!!!!!!!!!!!!!!!!")
         };
-        recworld.printWorld=function(){
+        recworld.printWorld=function(outtype){
             var s=""
             this.tileArray.forEach(function(te){
                 //console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
-                s+=Block.Name[recworld.getBlock(te.entity_x,0,te.entity_z).type]+" at "+te.entity_x+","+te.entity_z+" is "+Math.round(te.temperature)+"<br>"
+                if (outtype!=null && outtype.contains(recworld.getBlock(te.entity_x,0,te.entity_z).type))
+                    s+=Block.Name[recworld.getBlock(te.entity_x,0,te.entity_z).type]+" at "+te.entity_x+","+te.entity_z+" is "+Math.round(te.temperature)+"<br>"
             });
             //console.log("The time is "+recworld.worldTick);
             s+="The tick is "+recworld.worldTick +"<br>"
@@ -326,8 +327,8 @@ var TileFuelCore={
 
                 if (this.temperature>=2000){
                     //TODO HANDLE OVERHEAT
-                    console.log(x+" "+z+" Overheat!")
-                    throw(x+" "+z+" Overheat!"+recWorld.worldTick);
+                    //console.log(x+" "+z+" Overheat!")
+                    throw("Fuel Rod @ ("+x+","+z+") Overheated @ Tick "+recWorld.worldTick);
                 }
             }
         };

@@ -56,19 +56,25 @@
                 setTimeout(function(){
                     var sd=Date.now();
                     while(Date.now()-sd< a.refreshRate && wd.worldTick< a.maxtime && !a.stopNow){
-                        wd.doTick();
+                        try{
+                            wd.doTick();
+                        }catch (err){
+                            deferred.reject(err);
+                            return;
+                        }
+
                         wd.worldTick++;
                     }
-                    if (a.stopNow)deferred.reject();else deferred.resolve();
+                    if (a.stopNow)deferred.reject("Stopped by user.");else deferred.resolve();
                 },0);
                 return deferred.promise;
             };
             function doemulate() {
                 emdefer().then(function () {
-                    a.outputHtml(wd.printWorld());
+                    a.outputHtml(wd.printWorld(null));
                     if (wd.worldTick< a.maxtime)doemulate();
-                },function(){
-                    a.outputHtml(wd.printWorld());
+                },function(reason){
+                    a.outputHtml(reason+'<br>'+wd.printWorld(null));
                 });
             }
             doemulate();

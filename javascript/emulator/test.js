@@ -3,4 +3,4 @@
  */
 
 
-console.log(Math.floor(3.9))
+console.log(7 in [7,1])
