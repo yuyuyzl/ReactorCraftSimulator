@@ -55,7 +55,7 @@ var RecWorld={
         recworld.isRemote=false;
         recworld.coreCount=0;
         recworld.tiles=[];
-        recworld.maxtemptot=0;
+        recworld.maxtemptot=-1;
         recworld.maxtemptots=null;
         for(var i=0;i<mr;i++){
             recworld.tiles.push(new Array(mr));
@@ -78,7 +78,7 @@ var RecWorld={
         recworld.printWorld=function(outtype){
             var s="";
             var maxs=null;
-            var maxtemp=0
+            var maxtemp=-1
             this.tileArray.forEach(function(te){
                 //console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
                 if (outtype!=null && outtype.contains(recworld.getBlock(te.entity_x,0,te.entity_z).type))
@@ -89,12 +89,12 @@ var RecWorld={
                 }
             });
             //console.log("The time is "+recworld.worldTick);
-            s+=maxs+'(now)<br>';
+            if (maxs!=null){s+=maxs+'(now)<br>';
             if (maxtemp>this.maxtemptot) {
                 this.maxtemptots=maxs+"(till now)<br>"
                 this.maxtemptot=maxtemp;
-            }
-            s+=this.maxtemptots;
+            }}
+            if (this.maxtemptots!=null)s+=this.maxtemptots;
             s+="The tick is "+recworld.worldTick +"<br>"
             s+="The day is "+recworld.worldTick/1728000 +"<br>"
             //console.log("Total steam is "+recworld.steam);
