@@ -77,7 +77,7 @@ var RecWorld={
             var s=""
             this.tileArray.forEach(function(te){
                 //console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
-                s+=recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+Math.round(te.temperature)+"<br>"
+                s+=Block.Name[recworld.getBlock(te.entity_x,0,te.entity_z).type]+" at "+te.entity_x+","+te.entity_z+" is "+Math.round(te.temperature)+"<br>"
             });
             //console.log("The time is "+recworld.worldTick);
             s+="The tick is "+recworld.worldTick +"<br>"
@@ -156,6 +156,7 @@ var Block={
     Type:{
         AIR:0, NORMAL:1, WATER:2, STEEL:3, CONCRETE:4, BEDINGOT:5, LEAD:6, OBSIDIAN:7, CORE:8, BOILER:9, REFLECTOR:10
     },
+    Name:[null,null,null,null,null,null,null,null,"Fuel Rod","Steam Boiler",null],
     createNew:function(){
         var block={};
         block.hasTileEntity=function(){
