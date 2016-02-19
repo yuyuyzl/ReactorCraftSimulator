@@ -48,8 +48,18 @@ var Basetile={
 };
 //RecWorld.java
 var RecWorld={
-    createNew:function(mr){
+    createNew:function(mr,isCapp,fuelType){
         var recworld={};
+        recworld.isCapp=isCapp;
+        if (fuelType==0) {//uranium
+            recworld.fuelFissionChance = 25;
+            recworld.fuelStepTemp=20;
+        }
+        if (fuelType==1){
+            recworld.fuelFissionChance = 30;
+            recworld.fuelStepTemp=30;
+        }
+
         recworld.worldTick=0;
         recworld.steam=0;
         recworld.isRemote=false;
@@ -158,7 +168,7 @@ var RecWorld={
                         recworld.tileArray.push(te);
                         break;
 
-                        break;//todo FILL THIS
+
                 }
             }
         };
@@ -202,7 +212,7 @@ var Block={
                 case Block.Type.WATER:
                     return 30;
                 case Block.Type.STEEL:
-                    return 100;
+                    return 90;
                 case Block.Type.CONCRETE:
                     return 60;
                 case Block.Type.BEDINGOT:
@@ -282,13 +292,14 @@ var TileBoiler={
             if (recWorld.worldTick%20==0){
                 this.updateTempurature(recWorld,x,z);
                 if (this.temperature>=2000){
-                    //TODO HANDLE OVERHEAT
+                    throw("Boiler @ ("+x+","+z+") Overheated @ Tick "+recWorld.worldTick);
 
                 }
             }
             if (this.temperature>100) {
                 recWorld.steam++;
-                this.temperature -= 10;//this is modified by wz
+                if (recWorld.isCapp) this.temperature -= 10;//this is modified by wz
+                else this.temperature-=5;
             }
 
         };
@@ -322,9 +333,9 @@ var TileFuelCore={
             if (ReikaRandomHelper.doWithChance(1/9)){
                 return true;
             }
-            if (ReikaRandomHelper.doWithChance(30)){
+            if (ReikaRandomHelper.doWithChance(recWorld.fuelFissionChance)){
                 this.spawnNeutronButst(recWorld,x,z);
-                this.temperature+=30;
+                this.temperature+=recWorld.fuelStepTemp;
                 return true;
             }
             return false;
@@ -340,7 +351,7 @@ var TileFuelCore={
                 this.updateTempurature(recWorld,x,z);
 
                 if (this.temperature>=2000){
-                    //TODO HANDLE OVERHEAT
+
                     //console.log(x+" "+z+" Overheat!")
                     throw("Fuel Rod @ ("+x+","+z+") Overheated @ Tick "+recWorld.worldTick);
                 }
@@ -450,7 +461,7 @@ var NeutronEmulatorV2={
                     return true;
                 }
             }
-            if (block.type==Block.Type.STEEL){
+            if (block.type==Block.Type.STEEL && recWorldObj.isCapp){
                 return true;
             }
             //console.log("X"+neutron.x+" Z"+neutron.z+" s"+neutron.steps+" t"+recWorldObj.worldTick)
@@ -463,8 +474,8 @@ var NeutronEmulatorV2={
                 return te.onNeutron(recWorldObj,neutron.x,neutron.y,neutron.z);
 
             }
-            //ToDo handle normal block
-            return false;
+
+            return ReikaRandomHelper.doWithChance(block.getAbsorptionChance());
         }
         ne.onTick=function(recWorldObj){
             var _entry=NeutronTrackerList.head;

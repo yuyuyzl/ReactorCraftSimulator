@@ -9,6 +9,8 @@
         this.col=8;
         this.row=8;
         this.chosen=1;
+        this.cappcount=0;
+        this.fuelType=0;
         this.maxtime=30000000;
         this.refreshRate=200;
         this.stopNow=false;
@@ -39,11 +41,11 @@
             $scope.outputFieldSafe=$sce.trustAsHtml(s);
 
         };
-        this.outputHtml("No output.<br>Run an emulation now!<br>Let's Rock!");
+        this.outputHtml("Nothing to output.<br>Choose block from the list above and left-click to place it into the world on the left.<br>And then, Let's Rock!");
         this.emulate=function(){
             this.stopNow=false;
             var a=this;
-            var wd=RecWorld.createNew(Math.max(a.col,a.row)+1);
+            var wd=RecWorld.createNew(Math.max(a.col,a.row)+1, a.cappcount>10, a.fuelType);
             for (var i=0;i<a.data.length;i++){
                     //console.log(this.data[i].length)
                 for (var j=0;j<a.data[i].length;j++){

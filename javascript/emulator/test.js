@@ -3,4 +3,12 @@
  */
 
 
-console.log(7 in [7,1])
+function a(){
+    console.log("a()")
+}
+function a(x){
+    console.log("a(x)")
+}
+
+a()
+a(1)

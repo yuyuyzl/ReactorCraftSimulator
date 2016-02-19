@@ -17,86 +17,6 @@
         ga('send', 'pageview');
 
     </script>
-</head>
-<body ng-controller="mainController as mc" role="document" style="cursor:default;padding-top: 100px">
-
-<nav class="nav navbar-inverse navbar-fixed-top navadd">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand">ReactorCraft Fission Reactor Simulator</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="https://github.com/yuyuyzl/ReactorCraftSimulator">Github</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
-
-
-
-<div class="container" role="main">
-    <main class="col-md-8" id="tableContainer">
-        <div align="center">
-            <table border="1">
-                <tr ng-repeat="x in mc.getRangeArray(mc.col)">
-                    <td ng-repeat="y in mc.getRangeArray(mc.row)">
-                        <div>
-                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockImg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-
-        </div>
-    </main>
-
-    <aside class="col-md-4">
-        <h4>Block List:</h4>
-
-        <ul class="nav nav-pills" role="tablist">
-<!--            <li role="presentation" ng-click="mc.chosen=null" ng-class="{'active':mc.chosen==null}"><a>Null</a></li>
-            <li role="presentation" ng-click="mc.chosen=1" ng-class="{'active':mc.chosen==1}"><a>Fuel Rod</a></li>
-            <li role="presentation" ng-click="mc.chosen=2" ng-class="{'active':mc.chosen==2}"><a>Steam Boiler</a></li>
-            <li role="presentation" ng-click="mc.chosen=3" ng-class="{'active':mc.chosen==3}"><a>Neutron Reflector</a></li>
-            <li role="presentation" ng-click="mc.chosen=4" ng-class="{'active':mc.chosen==4}"><a>Steel Block</a></li>
-            -->
-            <li role="presentation" ng-repeat="i in mc.getRangeArray(mc.blockNames.length)" ng-click="mc.chosen=i" ng-class="{'active':mc.chosen==i}"><a ng-bind="mc.blockNames[i]"></a></li>
-        </ul>
-
-
-
-        </p>
-        <p style="text-align: center">
-            Scale:
-            <input ng-model="mc.col" style="width: 30px;text-align: center;">
-            <button ng-click="mc.col=mc.inc(mc.col)">+</button>
-            <button ng-click="mc.col=mc.col-1">-</button>
-            &nbsp;&nbsp;x&nbsp;&nbsp;
-
-            <input ng-model="mc.row"  style="width: 30px;text-align: center;">
-            <button ng-click="mc.row=mc.inc(mc.row)">+</button>
-            <button ng-click="mc.row=mc.row-1">-</button>
-        </p>
-        <br>
-        <p align="center">
-            <button ng-click="mc.clearData()" style="width: 100px; height: 30px">Clear</button>
-        </p>
-        <br>
-        <p align="center">
-            Time:&nbsp;<input ng-model="mc.maxtime" style="width: 100px;text-align: center;">&nbsp;&nbsp;&nbsp;Refresh rate:&nbsp;<input ng-model="mc.refreshRate" style="width: 100px;text-align: center;">
-        </p>
-        <p align="center">
-            <button ng-click="mc.emulate()" style="width: 100px; height: 30px">Let's Rock!</button>
-            <button ng-click="mc.stopNow=true" style="width: 100px; height: 30px">It's Over!</button>
-        </p>
-        <div>
-            <p ng-bind-html="outputFieldSafe"></p>
-        </div>
-    </aside>
-
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -115,6 +35,88 @@
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="javascript/bootstrap.min.js"></script>
+</head>
+<body ng-controller="mainController as mc" role="document" style="cursor:default;padding-top: 100px">
+
+<nav class="nav navbar-inverse navbar-fixed-top navadd unselectable">
+    <div class="container">
+        <div class="navbar-header">
+
+            <a class="navbar-brand" ng-click="mc.cappcount=mc.cappcount+1"><img src="img/capplogo.png" ng-show="mc.cappcount>10" align="left" style="padding-right: 10px">ReactorCraft Fission Reactor Simulator</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://github.com/yuyuyzl/ReactorCraftSimulator">Github</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+<div class="container" role="main">
+    <main class="col-md-8 unselectable" id="tableContainer">
+        <div align="center">
+            <table border="1">
+                <tr ng-repeat="x in mc.getRangeArray(mc.col)">
+                    <td ng-repeat="y in mc.getRangeArray(mc.row)">
+                        <div>
+                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockImg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+    </main>
+
+    <aside class="col-md-4">
+        <h4>Block List:</h4>
+
+        <ul class="nav nav-pills unselectable" role="tablist">
+            <li role="presentation" ng-repeat="i in mc.getRangeArray(mc.blockNames.length)" ng-click="mc.chosen=i" ng-class="{'active':mc.chosen==i}"><a ng-bind="mc.blockNames[i]"></a></li>
+        </ul>
+
+
+
+        <p style="text-align: center">
+            Scale:
+            <input ng-model="mc.col" style="width: 30px;text-align: center;">
+            <button ng-click="mc.col=mc.inc(mc.col)">+</button>
+            <button ng-click="mc.col=mc.col-1">-</button>
+            &nbsp;&nbsp;x&nbsp;&nbsp;
+
+            <input ng-model="mc.row"  style="width: 30px;text-align: center;">
+            <button ng-click="mc.row=mc.inc(mc.row)">+</button>
+            <button ng-click="mc.row=mc.row-1">-</button>
+        </p>
+        <br>
+        <p align="center">
+            <button ng-click="mc.clearData()" style="width: 100px; height: 30px">Clear</button>
+        </p>
+
+        <h4>Fuel Type:</h4>
+        <ul class="nav nav-pills unselectable" role="tablist">
+            <li role="presentation" ng-click="mc.fuelType=0" ng-class="{'active':mc.fuelType==0}"><a>Uranium</a></li>
+            <li role="presentation" ng-click="mc.fuelType=1" ng-class="{'active':mc.fuelType==1}"><a>Plutonium</a></li>
+        </ul>
+        <br>
+        <p align="center">
+            Time:&nbsp;<input ng-model="mc.maxtime" style="width: 100px;text-align: center;">&nbsp;&nbsp;&nbsp;Refresh rate:&nbsp;<input ng-model="mc.refreshRate" style="width: 100px;text-align: center;">
+        </p>
+        <p align="center">
+            <button ng-click="mc.emulate()" style="width: 100px; height: 30px">Let's Rock!</button>
+            <button ng-click="mc.stopNow=true" style="width: 100px; height: 30px">It's Over!</button>
+        </p>
+        <div>
+            <p ng-bind-html="outputFieldSafe"></p>
+        </div>
+    </aside>
+
+
+
 </div>
 </body>
 </html>
