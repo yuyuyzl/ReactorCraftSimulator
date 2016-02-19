@@ -88,7 +88,7 @@ var RecWorld={
         recworld.printWorld=function(outtype){
             var s="";
             var maxs=null;
-            var maxtemp=-1
+            var maxtemp=-1;
             this.tileArray.forEach(function(te){
                 //console.log(recworld.getBlock(te.entity_x,0,te.entity_z).type+" at "+te.entity_x+","+te.entity_z+" is "+te.temperature);
                 if (outtype!=null && outtype.contains(recworld.getBlock(te.entity_x,0,te.entity_z).type))
@@ -101,12 +101,12 @@ var RecWorld={
             //console.log("The time is "+recworld.worldTick);
             if (maxs!=null){s+=maxs+'(now)<br>';
             if (maxtemp>this.maxtemptot) {
-                this.maxtemptots=maxs+"(till now)<br>"
+                this.maxtemptots=maxs+"(till now)<br>";
                 this.maxtemptot=maxtemp;
             }}
             if (this.maxtemptots!=null)s+=this.maxtemptots;
-            s+="The tick is "+recworld.worldTick +"<br>"
-            s+="The day is "+recworld.worldTick/1728000 +"<br>"
+            s+="The tick is "+recworld.worldTick +"<br>";
+            s+="The day is "+recworld.worldTick/1728000 +"<br>";
             //console.log("Total steam is "+recworld.steam);
             s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick;
             return s;
@@ -260,7 +260,7 @@ var ForgeDirections=[ForgeDirection.DOWN,ForgeDirection.UP,
 var getRandomDirection=function(){
     return [ForgeDirection.NORTH,ForgeDirection.SOUTH,
         ForgeDirection.WEST,ForgeDirection.EAST,ForgeDirection.EAST][Math.floor(Math.random()*4)];
-}
+};
 //ReikaRandomHelper.java
 var ReikaRandomHelper={
     doWithChance:function(num){
@@ -327,7 +327,7 @@ var TileFuelCore={
             this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
             this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
             this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
-        }
+        };
         tb.onNeutron=function(recWorld,x,y,z){
 
             if (ReikaRandomHelper.doWithChance(1/9)){
@@ -364,14 +364,14 @@ var TileFuelCore={
 //NeutronEmulatorV2.java
 var getTicksByDistance=function(dist){
     return  Math.floor((dist / 0.75) - 1);
-}
+};
 var NeutronEmulatorV2={
     createNew:function(){
         var ne={};
         ne.MAX_DISTANCE=16;
         var NeutronTracker={
             createNew:function(){
-                var nt={}
+                var nt={};
 
                 nt.initNeutron=function(direction,x,y,z){
                     nt.direction=direction;
@@ -380,18 +380,18 @@ var NeutronEmulatorV2={
                     nt.z=z;
                     nt.age=0;
                     nt.steps=0
-                }
+                };
                 nt.goForward=function(){
 
                     this.steps++;
 
                     this.x+=this.direction.offsetX;
                     this.z+=this.direction.offsetZ;
-                }
-                nt.turnBack=function(){this.direction=this.direction.getOpposite()}
+                };
+                nt.turnBack=function(){this.direction=this.direction.getOpposite()};
                 return nt;
             }
-        }
+        };
         var NeutronTrackerList={
             Entry:{
                 createNew:function(){
@@ -433,7 +433,7 @@ var NeutronEmulatorV2={
                 }else{
                     //console.log("restoring object")
                     entry=this.freelist;
-                    if (this.freelist.next!=null)this.freelist.next.prev=null
+                    if (this.freelist.next!=null)this.freelist.next.prev=null;
                     this.freelist=this.freelist.next;
                 }
                 entry.next=this.head;
@@ -445,7 +445,7 @@ var NeutronEmulatorV2={
                 return entry;
             }
 
-        }
+        };
         var testAbsorbed=function(neutron,recWorldObj){
 
             var block=recWorldObj.getBlock(neutron.x,0,neutron.z);
@@ -476,7 +476,7 @@ var NeutronEmulatorV2={
             }
 
             return ReikaRandomHelper.doWithChance(block.getAbsorptionChance());
-        }
+        };
         ne.onTick=function(recWorldObj){
             var _entry=NeutronTrackerList.head;
             while (_entry!=null){
@@ -506,16 +506,16 @@ var NeutronEmulatorV2={
                     }
                 }
             }
-        }
+        };
         ne.fireNeutron=function(recWorldObj,x,y,z,direction){
             //console.log(x,z,direction);
             var neutron=NeutronTrackerList.spawnNeutron();
             neutron.initNeutron(direction,x,y,z);
             neutron.goForward();
-        }
+        };
         return ne;
     }
-}
+};
 
 
 /*
