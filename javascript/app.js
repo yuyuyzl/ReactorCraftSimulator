@@ -32,9 +32,9 @@
             else n=Number(n)+1;
             return n;
         };
-        this.blockNames=["Air","Fuel Rod","Steam Boiler","Reflector","Steel Block"];
-        this.blockImg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png","img/steel.png"];
-        this.blockValue=[null,Block.Type.CORE,Block.Type.BOILER,Block.Type.REFLECTOR,Block.Type.STEEL];
+        this.blockNames=["Air","Fuel Rod","Steam Boiler","Reflector","Steel Block","Bedingot Block","Concrete","Obsidian","Water"];
+        this.blockImg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png","img/steel.png","img/bedrock.png","img/concrete.png","img/obsidian.png","img/water_still.png"];
+        this.blockValue=[null,Block.Type.CORE,Block.Type.BOILER,Block.Type.REFLECTOR,Block.Type.STEEL,Block.Type.BEDINGOT,Block.Type.CONCRETE,Block.Type.OBSIDIAN,Block.Type.WATER];
 
         this.outputHtml=function(s){
             //console.log(s);

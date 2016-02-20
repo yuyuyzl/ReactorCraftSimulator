@@ -54,14 +54,17 @@ var RecWorld={
         if (fuelType==0) {//uranium
             recworld.fuelFissionChance = 25;
             recworld.fuelStepTemp=20;
+            recworld.fuelConsumeChance=3;
         }
         if (fuelType==1){
             recworld.fuelFissionChance = 30;
             recworld.fuelStepTemp=30;
+            recworld.fuelConsumeChance=4;
         }
 
         recworld.worldTick=0;
         recworld.steam=0;
+        recworld.fuelConsumed=0;
         recworld.isRemote=false;
         recworld.coreCount=0;
         recworld.tiles=[];
@@ -108,7 +111,9 @@ var RecWorld={
             s+="The tick is "+recworld.worldTick +"<br>";
             s+="The day is "+recworld.worldTick/1728000 +"<br>";
             //console.log("Total steam is "+recworld.steam);
-            s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick;
+            if (recworld.steam>0)s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick+"<br>";
+            if (recworld.fuelConsumed>0)s+="Fuel / minute is "+recworld.fuelConsumed*20*60/recworld.worldTick/100+"<br>";
+            if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency:"+recworld.steam/recworld.fuelConsumed;
             return s;
         };
         recworld.checkCoord=function(x, z) {
@@ -334,6 +339,7 @@ var TileFuelCore={
                 return true;
             }
             if (ReikaRandomHelper.doWithChance(recWorld.fuelFissionChance)){
+                if (ReikaRandomHelper.doWithChance(recWorld.fuelConsumeChance))recWorld.fuelConsumed++;
                 this.spawnNeutronButst(recWorld,x,z);
                 this.temperature+=recWorld.fuelStepTemp;
                 return true;
