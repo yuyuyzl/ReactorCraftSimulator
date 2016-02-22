@@ -19,6 +19,40 @@
             for (var i=0;i<32;i++)this.data.push(new Array(32));
         };
         this.clearData();
+        this.GetQueryString=function(name){
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null)return  unescape(r[2]);
+            return null;
+        }
+        this.encodeData=function(data,x,y,ft,cp){
+            var s=x+"_"+y+"_";
+            for (var i=0;i<x;i++)
+                for (var j=0;j<y;j++)s+=data[i][j]==null?'0':['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H'][data[i][j]]
+            s+="_"+(ft+(cp?8:0))
+            return s;
+
+
+        }
+        this.decodeData=function(s){
+            console.log(s)
+            var a=s.split("_")
+            console.log(a)
+            this.col= a[0];
+            this.row=a[1];
+            var k=0
+            for (var i=0;i<this.col;i++)
+                for (var j=0;j<this.row;j++){
+                    this.data[i][j]=['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H'].indexOf(a[2][k]);
+                    k++;
+                }
+            if (a[3]>=8){
+                this.fuelType=a[3]-8;
+                this.cappcount=11;
+            }else this.fuelType=a[3];
+        }
+        var dataget=this.GetQueryString('data');
+        if (dataget!=null)this.decodeData(dataget);
         this.getRangeArray=function(n){
             var ans=[];
             for (var i=0;i<n;i++){

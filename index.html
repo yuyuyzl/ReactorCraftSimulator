@@ -78,7 +78,7 @@
         <ul class="nav nav-pills unselectable" role="tablist">
             <li role="presentation" ng-repeat="i in mc.getRangeArray(mc.blockNames.length)" ng-click="mc.chosen=i" ng-class="{'active':mc.chosen==i}"><a ng-bind="mc.blockNames[i]"></a></li>
         </ul>
-
+        <br>
 
 
         <p style="text-align: center">
@@ -88,7 +88,7 @@
             <button ng-click="mc.col=mc.col-1">-</button>
             &nbsp;&nbsp;x&nbsp;&nbsp;
 
-            <input ng-model="mc.row"  style="width: 30px;text-align: center;">
+            <input ng-model="mc.row" style="width: 30px;text-align: center;">
             <button ng-click="mc.row=mc.inc(mc.row)">+</button>
             <button ng-click="mc.row=mc.row-1">-</button>
         </p>
@@ -103,6 +103,8 @@
             <li role="presentation" ng-click="mc.fuelType=1" ng-class="{'active':mc.fuelType==1}"><a>Plutonium</a></li>
         </ul>
         <br>
+        <p>Share Link:<input ng-model="'http://yuyuyzl.github.io/ReactorCraftSimulator/?data='+mc.encodeData(mc.data,mc.col,mc.row,mc.fuelType,mc.cappcount>10)"></p>
+        <br>
         <p align="center">
             Time:&nbsp;<input ng-model="mc.maxtime" style="width: 100px;text-align: center;">&nbsp;&nbsp;&nbsp;Refresh rate:&nbsp;<input ng-model="mc.refreshRate" style="width: 100px;text-align: center;">
         </p>
@@ -113,6 +115,7 @@
         <div>
             <p ng-bind-html="outputFieldSafe"></p>
         </div>
+
     </aside>
 
 
