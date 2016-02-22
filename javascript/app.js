@@ -29,7 +29,7 @@
             var s=x+"_"+y+"_";
             for (var i=0;i<x;i++)
                 for (var j=0;j<y;j++)s+=data[i][j]==null?'0':['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H'][data[i][j]]
-            s+="_"+(ft+(cp?8:0))
+            s+="_"+(cp?(ft+8):ft)
             return s;
 
 
