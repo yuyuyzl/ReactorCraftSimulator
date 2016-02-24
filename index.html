@@ -58,11 +58,11 @@
 <div class="container" role="main">
     <main class="col-md-8 unselectable" id="tableContainer">
         <div align="center">
-            <table border="1">
+            <table border="1" ng-mouseleave="mc.mdown=false">
                 <tr ng-repeat="x in mc.getRangeArray(mc.col)">
                     <td ng-repeat="y in mc.getRangeArray(mc.row)">
                         <div>
-                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockImg[mc.data[x][y]]}}" ng-click="mc.data[x][y]=mc.chosen">
+                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockImg[mc.data[x][y]]}}" draggable="false" ng-mousedown="mc.mousemoveHandler(1,x,y)" ng-mousemove="mc.mousemoveHandler(0,x,y)" ng-mouseup="mc.mousemoveHandler(-1,x,y)" ng-click="mc.mousemoveHandler(-1,x,y)">
                         </div>
                     </td>
                 </tr>
