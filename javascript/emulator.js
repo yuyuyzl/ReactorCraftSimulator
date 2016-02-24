@@ -68,6 +68,7 @@ var RecWorld={
         recworld.isRemote=false;
         recworld.coreCount=0;
         recworld.tiles=[];
+        recworld.neutronEscaped=0;
         recworld.maxtemptot=-1;
         recworld.maxtemptots=null;
         for(var i=0;i<mr;i++){
@@ -113,7 +114,8 @@ var RecWorld={
             //console.log("Total steam is "+recworld.steam);
             if (recworld.steam>0)s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick+"<br>";
             if (recworld.fuelConsumed>0)s+="Fuel / minute is "+recworld.fuelConsumed*20*60/recworld.worldTick/100+"<br>";
-            if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency:"+recworld.steam/recworld.fuelConsumed;
+            if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency:"+recworld.steam/recworld.fuelConsumed+"<br>";
+            s+="Escaped Neutron / minute: "+recworld.neutronEscaped*20*60/recworld.worldTick;
             return s;
         };
         recworld.checkCoord=function(x, z) {
@@ -490,6 +492,7 @@ var NeutronEmulatorV2={
                 _entry=_entry.next;
                 if (neutron.steps>= this.MAX_DISTANCE){
                     NeutronTrackerList.remove(neutron);
+                    recWorldObj.neutronEscaped++;
                     continue;
                 }
 
