@@ -37,6 +37,7 @@ var Basetile={
                         var newT = T - dT / 4;
                         this.temperature += dT / 4;
                         bt.setTemperature(newT);
+
                     }
 
                 }
@@ -113,7 +114,7 @@ var RecWorld={
             s+="The day is "+recworld.worldTick/1728000 +"<br>";
             //console.log("Total steam is "+recworld.steam);
             if (recworld.steam>0)s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick+"<br>";
-            if (recworld.fuelConsumed>0)s+="Fuel / minute is "+recworld.fuelConsumed*20*60/recworld.worldTick/100+"<br>";
+            if (recworld.fuelConsumed!=0)s+="Fuel / minute is "+recworld.fuelConsumed*20*60/recworld.worldTick/100+"<br>";
             if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency:"+recworld.steam/recworld.fuelConsumed+"<br>";
             s+="Escaped Neutron / minute: "+recworld.neutronEscaped*20*60/recworld.worldTick;
             return s;
@@ -174,6 +175,11 @@ var RecWorld={
                         recworld.tiles[x][z]=te;
                         recworld.tileArray.push(te);
                         break;
+                    case Block.Type.BREEDER:
+                        var te=TileBreederCore.createNew(x,z);
+                        recworld.tiles[x][z]=te;
+                        recworld.tileArray.push(te);
+                        break;
 
 
                 }
@@ -186,15 +192,16 @@ var RecWorld={
 //Block.java
 var Block={
     Type:{
-        AIR:0, NORMAL:1, WATER:2, STEEL:3, CONCRETE:4, BEDINGOT:5, LEAD:6, OBSIDIAN:7, CORE:8, BOILER:9, REFLECTOR:10
+        AIR:0, NORMAL:1, WATER:2, STEEL:3, CONCRETE:4, BEDINGOT:5, LEAD:6, OBSIDIAN:7, CORE:8, BOILER:9, REFLECTOR:10, BREEDER:11
     },
-    Name:[null,null,null,null,null,null,null,null,"Fuel Rod","Steam Boiler",null],
+    Name:[null,null,null,null,null,null,null,null,"Fuel Rod","Steam Boiler",null,"Breeder Core"],
     createNew:function(){
         var block={};
         block.hasTileEntity=function(){
             switch (this.type) {
                 case Block.Type.CORE:
                 case Block.Type.BOILER:
+                case Block.Type.BREEDER:
                     return true;
                 default:
                     return false;
@@ -329,22 +336,23 @@ var TileFuelCore={
         tb.getZ=function(){
             return this.entity_z;
         };
-        tb.spawnNeutronButst=function(recWorld,x,z){
+        tb.spawnNeutronBurst=function(recWorld,x,z){
 
-            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
-            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
-            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection());
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection(),NeutronType.FISSION);
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection(),NeutronType.FISSION);
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection(),NeutronType.FISSION);
         };
-        tb.onNeutron=function(recWorld,x,y,z){
-
-            if (ReikaRandomHelper.doWithChance(1/9)){
+        tb.onNeutron=function(recWorld,x,y,z,type){
+            if (type ==NeutronType.FISSION || type==NeutronType.DECAY){
+                if (ReikaRandomHelper.doWithChance(1/9)){
+                    return true;
+                }
+                if (ReikaRandomHelper.doWithChance(recWorld.fuelFissionChance)){
+                    if (ReikaRandomHelper.doWithChance(recWorld.fuelConsumeChance))recWorld.fuelConsumed++;
+                    this.spawnNeutronBurst(recWorld,x,z);
+                    this.temperature+=recWorld.fuelStepTemp;
                 return true;
-            }
-            if (ReikaRandomHelper.doWithChance(recWorld.fuelFissionChance)){
-                if (ReikaRandomHelper.doWithChance(recWorld.fuelConsumeChance))recWorld.fuelConsumed++;
-                this.spawnNeutronButst(recWorld,x,z);
-                this.temperature+=recWorld.fuelStepTemp;
-                return true;
+                }
             }
             return false;
         };
@@ -352,13 +360,15 @@ var TileFuelCore={
             this.emulator.onTick(recWorld);
             //console.log("CORE UPDATE CALLED")
             //console.log(recWorld.worldTick);
-            if (ReikaRandomHelper.doWithChance(1/20))this.emulator.fireNeutron(recWorld,x,0,z,getRandomDirection());
+            if (ReikaRandomHelper.doWithChance(1/20))this.emulator.fireNeutron(recWorld,x,0,z,getRandomDirection(),NeutronType.DECAY);
             if (recWorld.worldTick%20==0){
                 //this.temperature=400;
 
                 this.updateTempurature(recWorld,x,z);
 
-                if (this.temperature>=2000){
+
+
+                if (this.temperature>=1800){
 
                     //console.log(x+" "+z+" Overheat!")
                     throw("Fuel Rod @ ("+x+","+z+") Overheated @ Tick "+recWorld.worldTick);
@@ -369,7 +379,76 @@ var TileFuelCore={
     }
 };
 
+//TileBreederCore.java
+
+var TileBreederCore={
+    createNew:function(x,z){
+        var tb=Basetile.createNew();
+        console.log("Created Breedercore");
+        tb.entity_x=x;
+        tb.entity_z=z;
+        tb.emulator=NeutronEmulatorV2.createNew();
+        tb.getX=function (){
+            return this.entity_x;
+        };
+        tb.getZ=function(){
+            return this.entity_z;
+        };
+        tb.spawnNeutronBurst=function(recWorld,x,z){
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection(),NeutronType.BREEDER);
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection(),NeutronType.BREEDER);
+            this.emulator.fireNeutron(recWorld, x, 0, z, getRandomDirection(),NeutronType.BREEDER);
+        };
+        tb.onNeutron=function(recWorld,x,y,z,type){
+            //console.log("B-RECEIVED-"+type);
+            if (ReikaRandomHelper.doWithChance(1/9)){
+                return true;
+            }
+
+            if (ReikaRandomHelper.doWithChance(25)){
+                if (type==NeutronType.BREEDER && ReikaRandomHelper.doWithChance(5)){
+                    recWorld.fuelConsumed-=5;
+                    this.temperature+=50;
+                }else{
+                    this.temperature+=this.temperature>=700?30:20;
+                }
+                this.spawnNeutronBurst(recWorld,x,z);
+
+                return true;
+            }
+            return false;
+        };
+
+        tb.update=function(recWorld,x,z){
+            this.emulator.onTick(recWorld);
+            //console.log("CORE UPDATE CALLED")
+            //console.log(recWorld.worldTick);
+            if (ReikaRandomHelper.doWithChance(1/20)){
+
+                this.emulator.fireNeutron(recWorld,x,0,z,getRandomDirection(),NeutronType.DECAY);
+            }
+            if (recWorld.worldTick%20==0){
+                //this.temperature=400;
+
+                this.updateTempurature(recWorld,x,z);
+
+                if (this.temperature>=900){
+
+                    //console.log(x+" "+z+" Overheat!")
+                    throw("Breeder Core @ ("+x+","+z+") Overheated @ Tick "+recWorld.worldTick);
+                }
+            }
+        };
+        return tb;
+    }
+};
+
 //NeutronEmulatorV2.java
+var NeutronType={
+    DECAY:0,
+    FISSION:1,
+    BREEDER:2
+}
 var getTicksByDistance=function(dist){
     return  Math.floor((dist / 0.75) - 1);
 };
@@ -381,13 +460,14 @@ var NeutronEmulatorV2={
             createNew:function(){
                 var nt={};
 
-                nt.initNeutron=function(direction,x,y,z){
+                nt.initNeutron=function(direction,x,y,z,type){
                     nt.direction=direction;
                     nt.x=x;
                     nt.y=y;
                     nt.z=z;
                     nt.age=0;
-                    nt.steps=0
+                    nt.steps=0;
+                    nt.type=type;
                 };
                 nt.goForward=function(){
 
@@ -474,12 +554,14 @@ var NeutronEmulatorV2={
             }
             //console.log("X"+neutron.x+" Z"+neutron.z+" s"+neutron.steps+" t"+recWorldObj.worldTick)
             //console.log(block.type);
-            if (block.type==Block.Type.CORE){
+            if (block.type==Block.Type.BREEDER || block.type==Block.Type.CORE){
 
                 var te=recWorldObj.getTileEntity(neutron.x,neutron.y,neutron.z);
 
 
-                return te.onNeutron(recWorldObj,neutron.x,neutron.y,neutron.z);
+                    return te.onNeutron(recWorldObj, neutron.x, neutron.y, neutron.z, neutron.type);
+
+
 
             }
 
@@ -516,10 +598,10 @@ var NeutronEmulatorV2={
                 }
             }
         };
-        ne.fireNeutron=function(recWorldObj,x,y,z,direction){
+        ne.fireNeutron=function(recWorldObj,x,y,z,direction,type){
             //console.log(x,z,direction);
             var neutron=NeutronTrackerList.spawnNeutron();
-            neutron.initNeutron(direction,x,y,z);
+            neutron.initNeutron(direction,x,y,z,type);
             neutron.goForward();
         };
         return ne;
