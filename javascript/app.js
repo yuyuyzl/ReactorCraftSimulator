@@ -78,9 +78,9 @@
             }
             if (this.mdown)this.data[x][y]=this.chosen;
         };
-        this.blockNames=["Air","Fuel Rod","Steam Boiler","Reflector","Steel Block","Bedingot Block","Concrete","Obsidian","Water","Breeder Core(WIP)"];
-        this.blockImg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png","img/steel.png","img/bedrock.png","img/concrete.png","img/obsidian.png","img/water_still.png","img/breeder_top.png"];
-        this.blockValue=[null,Block.Type.CORE,Block.Type.BOILER,Block.Type.REFLECTOR,Block.Type.STEEL,Block.Type.BEDINGOT,Block.Type.CONCRETE,Block.Type.OBSIDIAN,Block.Type.WATER,Block.Type.BREEDER];
+        this.blockNames=["Air","Fuel Rod","Steam Boiler","Reflector","Steel Block","Bedingot Block","Concrete","Obsidian","Water","Breeder Core","Sodium Heater"];
+        this.blockImg=["img/blank.png","img/fuel_top.png","img/boiler.png","img/reflector.png","img/steel.png","img/bedrock.png","img/concrete.png","img/obsidian.png","img/water_still.png","img/breeder_top.png","img/sodiumboiler.png"];
+        this.blockValue=[null,Block.Type.CORE,Block.Type.BOILER,Block.Type.REFLECTOR,Block.Type.STEEL,Block.Type.BEDINGOT,Block.Type.CONCRETE,Block.Type.OBSIDIAN,Block.Type.WATER,Block.Type.BREEDER,Block.Type.SODIUM_HEATER];
 
         this.outputHtml=function(s){
             //console.log(s);

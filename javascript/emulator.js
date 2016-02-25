@@ -26,7 +26,7 @@ var Basetile={
                 var dz = z + dir.offsetZ;
                 var block = recWorld.getBlock(dx, dy, dz);
                 var te = recWorld.getTileEntity(dx, dy, dz);
-                if (block != null && te!=null && te.hasOwnProperty("temperature")) {
+                if (block != null && te!=null) {
 
                     var bt = te;
 
@@ -42,6 +42,31 @@ var Basetile={
 
                 }
             }
+
+            for (i=2;i<6;i++){
+                dir = ForgeDirections[i];
+                dx = x + dir.offsetX;
+                dy = dir.offsetY;
+                dz = z + dir.offsetZ;
+                block = recWorld.getBlock(dx, dy, dz);
+                te = recWorld.getTileEntity(dx, dy, dz);
+                if (block != null && te!=null) {
+
+                    bt = te;
+                    if ((this.type==TileType.FISSION && bt.type==TileType.FISSION) ||
+                        (this.type==TileType.BREEDER && ((bt.type==TileType.BREEDER)||(bt.type==TileType.SODIUM_HEATER)))) {
+                        T = bt.temperature;
+                        dT = - T + this.temperature;
+                        if (dT > 0) {
+
+                            newT = T + dT / 16;
+                            this.temperature -= dT / 16;
+                            bt.setTemperature(newT);
+
+                        }
+                    }
+                }
+            }
         };
 
         return tile;
@@ -52,6 +77,7 @@ var RecWorld={
     createNew:function(mr,isCapp,fuelType){
         var recworld={};
         recworld.isCapp=isCapp;
+        recworld.fuelType=fuelType;
         if (fuelType==0) {//uranium
             recworld.fuelFissionChance = 25;
             recworld.fuelStepTemp=20;
@@ -66,6 +92,7 @@ var RecWorld={
         recworld.worldTick=0;
         recworld.steam=0;
         recworld.fuelConsumed=0;
+        recworld.plutoniumProduced=0;
         recworld.isRemote=false;
         recworld.coreCount=0;
         recworld.tiles=[];
@@ -113,9 +140,10 @@ var RecWorld={
             s+="The tick is "+recworld.worldTick +"<br>";
             s+="The day is "+recworld.worldTick/1728000 +"<br>";
             //console.log("Total steam is "+recworld.steam);
-            if (recworld.steam>0)s+="Steam / minute is "+recworld.steam*20*60/recworld.worldTick+"<br>";
-            if (recworld.fuelConsumed!=0)s+="Fuel / minute is "+recworld.fuelConsumed*20*60/recworld.worldTick/100+"<br>";
-            if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency:"+recworld.steam/recworld.fuelConsumed+"<br>";
+            if (recworld.steam>0)s+="Steam / minute: "+recworld.steam*20*60/recworld.worldTick+"<br>";
+            if (recworld.fuelConsumed!=0)s+="Uranium consumed / minute: "+recworld.fuelConsumed*20*60/recworld.worldTick/100+"<br>";
+            if (recworld.plutoniumProduced!=0)s+="Plutonium produced / minute: "+recworld.plutoniumProduced*20*60/recworld.worldTick/100+"<br>";
+            if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency: "+recworld.steam/recworld.fuelConsumed+"<br>";
             s+="Escaped Neutron / minute: "+recworld.neutronEscaped*20*60/recworld.worldTick;
             return s;
         };
@@ -180,7 +208,11 @@ var RecWorld={
                         recworld.tiles[x][z]=te;
                         recworld.tileArray.push(te);
                         break;
-
+                    case Block.Type.SODIUM_HEATER:
+                        var te=TileSodiumHeater.createNew(x,z);
+                        recworld.tiles[x][z]=te;
+                        recworld.tileArray.push(te);
+                        break;
 
                 }
             }
@@ -192,9 +224,9 @@ var RecWorld={
 //Block.java
 var Block={
     Type:{
-        AIR:0, NORMAL:1, WATER:2, STEEL:3, CONCRETE:4, BEDINGOT:5, LEAD:6, OBSIDIAN:7, CORE:8, BOILER:9, REFLECTOR:10, BREEDER:11
+        AIR:0, NORMAL:1, WATER:2, STEEL:3, CONCRETE:4, BEDINGOT:5, LEAD:6, OBSIDIAN:7, CORE:8, BOILER:9, REFLECTOR:10, BREEDER:11, SODIUM_HEATER:12
     },
-    Name:[null,null,null,null,null,null,null,null,"Fuel Rod","Steam Boiler",null,"Breeder Core"],
+    Name:[null,null,null,null,null,null,null,null,"Fuel Rod","Steam Boiler",null,"Breeder Core","Sodium Heater"],
     createNew:function(){
         var block={};
         block.hasTileEntity=function(){
@@ -202,6 +234,7 @@ var Block={
                 case Block.Type.CORE:
                 case Block.Type.BOILER:
                 case Block.Type.BREEDER:
+                case Block.Type.SODIUM_HEATER:
                     return true;
                 default:
                     return false;
@@ -290,10 +323,15 @@ var ReikaRandomHelper={
     }
 };
 
+var TileType={
+    BOILER:0,FISSION:1,BREEDER:2,SODIUM_HEATER:3
+}
+
 //TileBoiler.java
 var TileBoiler={
     createNew:function(x,z){
         var tb=Basetile.createNew();
+        tb.type=TileType.BOILER;
         tb.entity_x=x;
         tb.entity_z=z;
         tb.getX=function (){
@@ -317,7 +355,44 @@ var TileBoiler={
             }
 
         };
+        tb.onNeutron=function(recWorld,x,y,z,type){
+            return type==NeutronType.BREEDER?ReikaRandomHelper.doWithChance(80):false;
+        }
 
+        return tb;
+    }
+};
+var TileSodiumHeater={
+    createNew:function(x,z){
+        var tb=Basetile.createNew();
+        tb.type=TileType.SODIUM_HEATER;
+        tb.entity_x=x;
+        tb.entity_z=z;
+        tb.getX=function (){
+            return this.entity_x;
+        };
+        tb.getZ=function(){
+            return this.entity_z;
+        };
+        tb.update= function (recWorld,x,z) {
+            if (recWorld.worldTick%20==0){
+                this.updateTempurature(recWorld,x,z);
+                if (this.temperature>=2000){
+                    throw("Sodium Heater @ ("+x+","+z+") Overheated @ Tick "+recWorld.worldTick);
+
+                }
+            }
+            if (this.temperature>300) {
+                this.temperature -= 123;
+
+                if (recWorld.isCapp) recWorld.steam+= 12;//this is modified by wz
+                else recWorld.steam+=24;
+            }
+
+        };
+        tb.onNeutron=function(recWorld,x,y,z,type){
+            return type==NeutronType.FISSION?ReikaRandomHelper.doWithChance(90):false;
+        }
         return tb;
     }
 };
@@ -327,6 +402,7 @@ var TileBoiler={
 var TileFuelCore={
     createNew:function(x,z){
         var tb=Basetile.createNew();
+        tb.type=TileType.FISSION
         tb.entity_x=x;
         tb.entity_z=z;
         tb.emulator=NeutronEmulatorV2.createNew();
@@ -348,7 +424,10 @@ var TileFuelCore={
                     return true;
                 }
                 if (ReikaRandomHelper.doWithChance(recWorld.fuelFissionChance)){
-                    if (ReikaRandomHelper.doWithChance(recWorld.fuelConsumeChance))recWorld.fuelConsumed++;
+                    if (ReikaRandomHelper.doWithChance(recWorld.fuelConsumeChance)){
+                        if (recWorld.fuelType==0)recWorld.fuelConsumed++;
+                        if (recWorld.fuelType==1)recWorld.plutoniumProduced--;
+                    }
                     this.spawnNeutronBurst(recWorld,x,z);
                     this.temperature+=recWorld.fuelStepTemp;
                 return true;
@@ -384,7 +463,8 @@ var TileFuelCore={
 var TileBreederCore={
     createNew:function(x,z){
         var tb=Basetile.createNew();
-        console.log("Created Breedercore");
+        //console.log("Created Breedercore");
+        tb.type=TileType.BREEDER;
         tb.entity_x=x;
         tb.entity_z=z;
         tb.emulator=NeutronEmulatorV2.createNew();
@@ -407,7 +487,8 @@ var TileBreederCore={
 
             if (ReikaRandomHelper.doWithChance(25)){
                 if (type==NeutronType.BREEDER && ReikaRandomHelper.doWithChance(5)){
-                    recWorld.fuelConsumed-=5;
+                    recWorld.fuelConsumed+=5/4;
+                    recWorld.plutoniumProduced+=5;
                     this.temperature+=50;
                 }else{
                     this.temperature+=this.temperature>=700?30:20;
@@ -427,12 +508,12 @@ var TileBreederCore={
 
                 this.emulator.fireNeutron(recWorld,x,0,z,getRandomDirection(),NeutronType.DECAY);
             }
-            if (recWorld.worldTick%20==0){
+            if (recWorld.worldTick%10==0){
                 //this.temperature=400;
 
                 this.updateTempurature(recWorld,x,z);
 
-                if (this.temperature>=900){
+                if (this.temperature>=1800){
 
                     //console.log(x+" "+z+" Overheat!")
                     throw("Breeder Core @ ("+x+","+z+") Overheated @ Tick "+recWorld.worldTick);
@@ -554,7 +635,7 @@ var NeutronEmulatorV2={
             }
             //console.log("X"+neutron.x+" Z"+neutron.z+" s"+neutron.steps+" t"+recWorldObj.worldTick)
             //console.log(block.type);
-            if (block.type==Block.Type.BREEDER || block.type==Block.Type.CORE){
+            if (block.type==Block.Type.BREEDER || block.type==Block.Type.CORE|| block.type==Block.Type.BOILER|| block.type==Block.Type.SODIUM_HEATER){
 
                 var te=recWorldObj.getTileEntity(neutron.x,neutron.y,neutron.z);
 
