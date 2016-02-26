@@ -14,6 +14,7 @@
         this.maxtime=30000000;
         this.refreshRate=200;
         this.stopNow=false;
+        this.ambientTemp=30;
         this.clearData=function(){
             this.data=[];
             for (var i=0;i<32;i++)this.data.push(new Array(32));
@@ -25,11 +26,12 @@
             if(r!=null)return  unescape(r[2]);
             return null;
         }
-        this.encodeData=function(data,x,y,ft,cp){
+        this.encodeData=function(data,x,y,ft,cp,at){
             var s=x+"_"+y+"_";
             for (var i=0;i<x;i++)
                 for (var j=0;j<y;j++)s+=data[i][j]==null?'0':['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H'][data[i][j]]
-            s+="_"+(cp?(ft+8):ft)
+            s+="_"+(cp?(ft+8):ft);
+            s+="_"+at;
             return s;
 
 
@@ -50,6 +52,8 @@
                 this.fuelType=a[3]-8;
                 this.cappcount=11;
             }else this.fuelType=a[3];
+            if (a[4]!=null)this.ambientTemp=a[4];
+
         }
         var dataget=this.GetQueryString('data');
         if (dataget!=null)this.decodeData(dataget);
@@ -91,7 +95,7 @@
         this.emulate=function(){
             this.stopNow=false;
             var a=this;
-            var wd=RecWorld.createNew(Math.max(a.col,a.row)+1, a.cappcount>10, a.fuelType);
+            var wd=RecWorld.createNew(Math.max(a.col,a.row)+1, a.cappcount>10, a.fuelType, a.ambientTemp);
             for (var i=0;i<a.data.length;i++){
                     //console.log(this.data[i].length)
                 for (var j=0;j<a.data[i].length;j++){

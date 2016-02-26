@@ -103,7 +103,9 @@
             <li role="presentation" ng-click="mc.fuelType=1" ng-class="{'active':mc.fuelType==1}"><a>Plutonium</a></li>
         </ul>
         <br>
-        <p>Share Link:<input ng-model="'http://yuyuyzl.github.io/ReactorCraftSimulator/?data='+mc.encodeData(mc.data,mc.col,mc.row,mc.fuelType,mc.cappcount>10)"></p>
+        <p align="center">Ambient Temperature:<input ng-model="mc.ambientTemp" style="width: 50px;text-align: center;"></p>
+        <br>
+        <p align="center">Share Link:<input ng-model="'http://yuyuyzl.github.io/ReactorCraftSimulator/?data='+mc.encodeData(mc.data,mc.col,mc.row,mc.fuelType,mc.cappcount>10,mc.ambientTemp)"></p>
         <br>
         <p align="center">
             Time:&nbsp;<input ng-model="mc.maxtime" style="width: 100px;text-align: center;">&nbsp;&nbsp;&nbsp;Refresh rate:&nbsp;<input ng-model="mc.refreshRate" style="width: 100px;text-align: center;">

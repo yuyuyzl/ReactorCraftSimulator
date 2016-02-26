@@ -12,7 +12,7 @@ var Basetile={
             this.temperature = newTemperature;
         };
         tile.updateTempurature=function(recWorld,x,z){
-            var dT=0-this.temperature;
+            var dT=recWorld.ambientTemp-this.temperature;
             if(dT!=0){
                 var d=64;
                 var diff=(1+dT/d);
@@ -74,10 +74,11 @@ var Basetile={
 };
 //RecWorld.java
 var RecWorld={
-    createNew:function(mr,isCapp,fuelType){
+    createNew:function(mr,isCapp,fuelType,ambientTemp){
         var recworld={};
         recworld.isCapp=isCapp;
         recworld.fuelType=fuelType;
+        recworld.ambientTemp=ambientTemp;
         if (fuelType==0) {//uranium
             recworld.fuelFissionChance = 25;
             recworld.fuelStepTemp=20;
