@@ -145,7 +145,7 @@ var RecWorld={
             if (recworld.steam>0)s+="Running HPTs: "+(recworld.steam*20/recworld.worldTick/102).toFixed(2)+"<br>";
             if (recworld.steam>0)s+="Steam / second / Rod: "+(recworld.steam*20/recworld.worldTick/recworld.coreCount).toFixed(2)+"<br>";
             if (recworld.fuelConsumed!=0)s+="Uranium consumed / second: "+(recworld.fuelConsumed*20/recworld.worldTick/100).toFixed(4)+"<br>";
-            if (recworld.plutoniumProduced!=0)s+="Plutonium produced / second: "+(recworld.plutoniumProduced*20/recworld.worldTick/100).toFixed(4)+"<br>";
+            if (recworld.plutoniumProduced!=0)s+="Plutonium produced / second: "+(recworld.plutoniumProduced*20/recworld.worldTick/100).toFixed(6)+"<br>";
             if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency: "+(recworld.steam/recworld.fuelConsumed).toFixed(2)+"<br>";
             s+="Escaped Neutron / second: "+(recworld.neutronEscaped*20/recworld.worldTick).toFixed(2);
             return s;
