@@ -139,14 +139,15 @@ var RecWorld={
             }}
             if (this.maxtemptots!=null)s+=this.maxtemptots;
             s+="The tick is "+recworld.worldTick +"<br>";
-            s+="The day is "+recworld.worldTick/1728000 +"<br>";
+            s+="The day is "+(recworld.worldTick/1728000).toFixed(2) +"<br>";
             //console.log("Total steam is "+recworld.steam);
-            if (recworld.steam>0)s+="Steam / minute: "+recworld.steam*20*60/recworld.worldTick+"<br>";
-            if (recworld.steam>0)s+="Steam / minute / Rod: "+recworld.steam*20*60/recworld.worldTick/recworld.coreCount+"<br>";
-            if (recworld.fuelConsumed!=0)s+="Uranium consumed / minute: "+recworld.fuelConsumed*20*60/recworld.worldTick/100+"<br>";
-            if (recworld.plutoniumProduced!=0)s+="Plutonium produced / minute: "+recworld.plutoniumProduced*20*60/recworld.worldTick/100+"<br>";
-            if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency: "+recworld.steam/recworld.fuelConsumed+"<br>";
-            s+="Escaped Neutron / minute: "+recworld.neutronEscaped*20*60/recworld.worldTick;
+            if (recworld.steam>0)s+="Steam / second: "+(recworld.steam*20/recworld.worldTick).toFixed(2)+"<br>";
+            if (recworld.steam>0)s+="Running HPTs: "+(recworld.steam*20/recworld.worldTick/102).toFixed(2)+"<br>";
+            if (recworld.steam>0)s+="Steam / second / Rod: "+(recworld.steam*20/recworld.worldTick/recworld.coreCount).toFixed(2)+"<br>";
+            if (recworld.fuelConsumed!=0)s+="Uranium consumed / second: "+(recworld.fuelConsumed*20/recworld.worldTick/100).toFixed(4)+"<br>";
+            if (recworld.plutoniumProduced!=0)s+="Plutonium produced / second: "+(recworld.plutoniumProduced*20/recworld.worldTick/100).toFixed(4)+"<br>";
+            if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency: "+(recworld.steam/recworld.fuelConsumed).toFixed(2)+"<br>";
+            s+="Escaped Neutron / second: "+(recworld.neutronEscaped*20/recworld.worldTick).toFixed(2);
             return s;
         };
         recworld.checkCoord=function(x, z) {
