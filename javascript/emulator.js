@@ -77,6 +77,7 @@ var RecWorld={
     createNew:function(mr,isCapp,fuelType,ambientTemp){
         var recworld={};
         recworld.isCapp=isCapp;
+        recworld.mr=mr;
         recworld.fuelType=fuelType;
         recworld.ambientTemp=ambientTemp;
         if (fuelType==0) {//uranium
@@ -190,6 +191,12 @@ var RecWorld={
             }
             return this.tiles[x][z];
 
+        };
+        recworld.getTemp=function (x,z) {
+            var te=this.getTileEntity(x,0,z);
+            if(te!=null){
+                return te.temperature;
+            }else return 0;
         };
         recworld.setBlock=function(t,x,z){
             if (this.checkCoord(x,z)){

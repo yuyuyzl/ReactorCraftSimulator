@@ -61,8 +61,8 @@
             <table border="1" ng-mouseleave="mc.mdown=false">
                 <tr ng-repeat="x in mc.getRangeArray(mc.col)">
                     <td ng-repeat="y in mc.getRangeArray(mc.row)">
-                        <div>
-                            <img class="img-responsive" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockImg[mc.data[x][y]]}}" draggable="false" ng-mousedown="mc.mousemoveHandler(1,x,y)" ng-mousemove="mc.mousemoveHandler(0,x,y)" ng-mouseup="mc.mousemoveHandler(-1,x,y)" ng-click="mc.mousemoveHandler(-1,x,y)">
+                        <div ng-style="mc.getCellStyle(x,y)">
+                            <img class="img-responsive" style="opacity: 0.7" ng-src="{{mc.data[x][y]==null?'img/blank.png':mc.blockImg[mc.data[x][y]]}}" draggable="false" ng-mousedown="mc.mousemoveHandler(1,x,y)" ng-mousemove="mc.mousemoveHandler(0,x,y)" ng-mouseup="mc.mousemoveHandler(-1,x,y)" ng-click="mc.mousemoveHandler(-1,x,y)">
                         </div>
                     </td>
                 </tr>

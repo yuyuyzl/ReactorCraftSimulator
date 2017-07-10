@@ -17,7 +17,9 @@
         this.ambientTemp=30;
         this.clearData=function(){
             this.data=[];
+            this.cellTemp=[];
             for (var i=0;i<32;i++)this.data.push(new Array(32));
+            for (var i=0;i<32;i++)this.cellTemp.push(new Array(32));
         };
         this.clearData();
         this.GetQueryString=function(name){
@@ -91,6 +93,23 @@
             $scope.outputFieldSafe=$sce.trustAsHtml(s);
 
         };
+        this.cellTemp=[[]];
+        this.getCellStyle=function(x,y){
+            var style={
+                'background-color':'white'
+            };
+            if(this.cellTemp[x]!=null)
+                if(this.cellTemp[x][y]!=null)
+                    if(this.cellTemp[x][y]!=0) {
+                        var k = this.cellTemp[x][y] - this.ambientTemp;
+                        k /= 5;
+                        if(k>255)k=255;
+                        k=255-k;
+                        style={'background-color': '#ff' + '0123456789abcdef'[Math.floor(k / 16)] + '0123456789abcdef'[Math.floor(k % 16)]+ '0123456789abcdef'[Math.floor(k / 16)] + '0123456789abcdef'[Math.floor(k % 16)]};
+                        //console.log("returning"+style['background-color']);
+                    }
+            return style;
+        };
         this.outputHtml("Nothing to output.<br>Choose block from the list above and left-click to place it into the world on the left.<br>And then, Let's Rock!");
         this.emulate=function(){
             this.stopNow=false;
@@ -110,6 +129,7 @@
                     while(Date.now()-sd< a.refreshRate && wd.worldTick< a.maxtime && !a.stopNow){
                         try{
                             wd.doTick();
+
                         }catch (err){
                             deferred.reject(err);
                             return;
@@ -124,6 +144,12 @@
             function doemulate() {
                 emdefer().then(function () {
                     a.outputHtml(wd.printWorld(null));
+                    for(var i=0;i<wd.mr;i++){
+                        a.cellTemp[i]=[];
+                        for(var j=0;j<wd.mr;j++){
+                            a.cellTemp[i][j]=wd.getTemp(i,j);
+                        }
+                    }
                     if (wd.worldTick< a.maxtime)doemulate();
                 },function(reason){
                     a.outputHtml(reason+'<br>'+wd.printWorld(null));
