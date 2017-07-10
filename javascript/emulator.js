@@ -147,6 +147,7 @@ var RecWorld={
             if (recworld.fuelConsumed!=0)s+="Uranium consumed / second: "+(recworld.fuelConsumed*20/recworld.worldTick/100).toFixed(4)+"<br>";
             if (recworld.plutoniumProduced!=0)s+="Plutonium produced / second: "+(recworld.plutoniumProduced*20/recworld.worldTick/100).toFixed(6)+"<br>";
             if (recworld.fuelConsumed>0 && recworld.steam>0)s+="Efficiency: "+(recworld.steam/recworld.fuelConsumed).toFixed(2)+"<br>";
+            if (recworld.fuelConsumed==0 && recworld.plutoniumProduced!=0 && recworld.steam>0)s+="Efficiency(Plutonium): "+(-recworld.steam/recworld.plutoniumProduced*4).toFixed(2)+"<br>";
             s+="Escaped Neutron / second: "+(recworld.neutronEscaped*20/recworld.worldTick).toFixed(2);
             return s;
         };
